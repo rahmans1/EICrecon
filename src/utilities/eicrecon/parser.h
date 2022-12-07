@@ -24,10 +24,11 @@ namespace jana::parser {
   class Parser {
     public:
 
-      Parser() {
+      Parser() : debug(true) {
         // FIXME: how to set the 'correct' units
-        // m_eval = dd4hep::tools::Evaluator(1.e+3, 1./1.60217733e-25, 1.e+9, 1./1.60217733e-10, 1.0, 1.0, 1.0); // Geant4
-        m_eval = new dd4hep::tools::Evaluator(
+        // m_eval = std::make_unique<dd4hep::tools::Evaluator>(
+        //     1.e+3, 1./1.60217733e-25, 1.e+9, 1./1.60217733e-10, 1.0, 1.0, 1.0); // Geant4
+        m_eval = std::make_unique<dd4hep::tools::Evaluator>(
             dd4hep::meter,
             dd4hep::kilogram,
             dd4hep::second,
@@ -38,37 +39,31 @@ namespace jana::parser {
             dd4hep::radian
             ); // try to use what DD4hep is using
       };
-      ~Parser() {
-        if(m_eval) delete m_eval;
-      };
-
-      // evaluate DD4hep expression `expr` and return a double
-      // Result<double> dd4hep_to_double(const std::string& expr) {
-      //   auto parsed = m_eval->evaluate(expr);
-      //   return {
-      //     parsed.first == dd4hep::tools::Evaluator::OK,
-      //     parsed.second
-      //   };
-      // }
+      ~Parser() {};
 
       // evaluate DD4hep expression `expr` and return a string
       // - if `expr` is itself a string, return `expr` silently
       // - this is useful for parsing CLI options
       Result<std::string> dd4hep_to_string(const std::string& expr) {
+        if(debug) fmt::print("PARSE: dd4hep_to_string({})\n",expr);
         auto parsed = m_eval->evaluate(expr);
         switch(parsed.first) {
           case dd4hep::tools::Evaluator::OK: // likely a number that was parsed successfuly; stringify it
+            if(debug) fmt::print("-> result: {} -> string: '{}'\n", parsed.second, std::to_string(parsed.second));
             return { true, std::to_string(parsed.second) };
           case dd4hep::tools::Evaluator::ERROR_UNKNOWN_VARIABLE: // likely a string; return `expr` as is
+            if(expr.find('*') != std::string::npos) // try to detect units typos
+              fmt::print(stderr,"WARNING: parsing '{}' as a string; is there a typo in the units?\n",expr);
+            if(debug) fmt::print("-> string\n");
             return { true, expr };
           default: // likely an error; complain and return `expr` as is
-            fmt::print(stderr,"ERROR calling Parser::dd4hep_to_string({}): ", expr);
+            fmt::print(stderr,"ERROR: cannot evaluate '{}'\n",expr);
             return { false, expr };
         };
       }
 
-
     private:
-      dd4hep::tools::Evaluator * m_eval;
+      std::unique_ptr<dd4hep::tools::Evaluator> m_eval;
+      bool debug;
   };
 }
