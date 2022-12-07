@@ -44,19 +44,39 @@ namespace jana::parser {
       // evaluate DD4hep expression `expr` and return a string
       // - if `expr` is itself a string, return `expr` silently
       // - this is useful for parsing CLI options
-      Result<std::string> dd4hep_to_string(const std::string& expr) {
-        if(debug) fmt::print("PARSE: dd4hep_to_string({})\n",expr);
+      // - optionally specify `key` to clarify debugging printouts
+      Result<std::string> dd4hep_to_string(const std::string& expr, const std::string& key="") {
+        if(debug) fmt::print("PARSE: dd4hep_to_string({}){}\n", expr, key==""? "" : " for key "+key);
+
+        // handle empty string, which would otherwise cause en error in parsing
+        if(expr=="") return { true, expr };
+
+        // handle comma-separated lists
+        // 
+        // TODO: if `expr` contains commas, tokenize and run each field through `dd4hep_to_string`, then re-combine
+        //       to a comma-separated list of new strings
+        //
+
+        // call Evaluator::evaluate to parse units and do the math
         auto parsed = m_eval->evaluate(expr);
+
+        // return a `Result`, with the calculated number re-stringified without any units
         switch(parsed.first) {
-          case dd4hep::tools::Evaluator::OK: // likely a number that was parsed successfuly; stringify it
+
+          // likely a number that was parsed successfuly; stringify it
+          case dd4hep::tools::Evaluator::OK:
             if(debug) fmt::print("-> result: {} -> string: '{}'\n", parsed.second, std::to_string(parsed.second));
             return { true, std::to_string(parsed.second) };
-          case dd4hep::tools::Evaluator::ERROR_UNKNOWN_VARIABLE: // likely a string; return `expr` as is
-            if(expr.find('*') != std::string::npos) // try to detect units typos
+
+          // likely a string (as long as it's not any specific unit name); return `expr` as is
+          case dd4hep::tools::Evaluator::ERROR_UNKNOWN_VARIABLE:
+            if(expr.find('*') != std::string::npos) // try to detect units typos, since here we assumed it was parsed as a string
               fmt::print(stderr,"WARNING: parsing '{}' as a string; is there a typo in the units?\n",expr);
-            if(debug) fmt::print("-> string\n");
+            if(debug) fmt::print("-> string '{}'\n", expr);
             return { true, expr };
-          default: // likely an error; complain and return `expr` as is
+
+          // likely an error; complain and return `expr` as is
+          default:
             fmt::print(stderr,"ERROR: cannot evaluate '{}'\n",expr);
             return { false, expr };
         };

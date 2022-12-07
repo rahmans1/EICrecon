@@ -60,11 +60,11 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelSciGlassProtoClusters:minClusterCenterEdep',  '30*MeV',                         '*'),
     ('BEMC:EcalBarrelSciGlassProtoClusters:minClusterHitEdep',     '1.0*MeV',                        '*'),
     ('BEMC:EcalBarrelSciGlassProtoClusters:sectorDist',            '5.0*cm',                         '*'),
-    ('BEMC:EcalBarrelSciGlassProtoClusters:splitCluster',          '0',                              '*'),
+    ('BEMC:EcalBarrelSciGlassProtoClusters:splitCluster',          'false',                          '*'),
 
     ('BEMC:EcalBarrelSciGlassClusters:input_protoclust_tag',             'EcalBarrelSciGlassProtoClusters',  'Name of input collection to use'),
     ('BEMC:EcalBarrelSciGlassClusters:depthCorrection',                  '0',                              ''),
-    ('BEMC:EcalBarrelSciGlassClusters:enableEtaBounds',                  '1',                              '*'),
+    ('BEMC:EcalBarrelSciGlassClusters:enableEtaBounds',                  'true',                           '*'),
     ('BEMC:EcalBarrelSciGlassClusters:energyWeight',                     'log',                            ''),
     ('BEMC:EcalBarrelSciGlassClusters:input_simhit_tag',                 'EcalBarrelSciGlassHits',         ''),
     ('BEMC:EcalBarrelSciGlassClusters:logWeightBase',                    '6.2',                            '*'),
@@ -73,7 +73,7 @@ eicrecon_reco_flags = [
 
     ('BEMC:EcalBarrelSciGlassTruthClusters:input_protoclust_tag',        'EcalBarrelSciGlassTruthProtoClusters',  'Name of input collection to use'),
     ('BEMC:EcalBarrelSciGlassTruthClusters:depthCorrection',             '0',                              ''),
-    ('BEMC:EcalBarrelSciGlassTruthClusters:enableEtaBounds',             '1',                              '*'),
+    ('BEMC:EcalBarrelSciGlassTruthClusters:enableEtaBounds',             'true',                           '*'),
     ('BEMC:EcalBarrelSciGlassTruthClusters:energyWeight',                'log',                            ''),
     ('BEMC:EcalBarrelSciGlassTruthClusters:input_simhit_tag',            'EcalBarrelSciGlassHits',         ''),
     ('BEMC:EcalBarrelSciGlassTruthClusters:logWeightBase',               '6.2',                            '*'),
@@ -217,10 +217,10 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapNIslandProtoClusters:minClusterCenterEdep', '30.0*MeV',                        '*'),
     ('EEMC:EcalEndcapNIslandProtoClusters:minClusterHitEdep',    '1.0*MeV',                         '*'),
     ('EEMC:EcalEndcapNIslandProtoClusters:sectorDist',           '5.0*cm',                         '*'),
-    ('EEMC:EcalEndcapNIslandProtoClusters:splitCluster',         '0',                              '*'),
+    ('EEMC:EcalEndcapNIslandProtoClusters:splitCluster',         'false',                          '*'),
 
     ('EEMC:EcalEndcapNTruthClusters:depthCorrection',            '0',                              ''),
-    ('EEMC:EcalEndcapNTruthClusters:enableEtaBounds',            '0',                              ''),
+    ('EEMC:EcalEndcapNTruthClusters:enableEtaBounds',            'false',                          ''),
     ('EEMC:EcalEndcapNTruthClusters:energyWeight',               'log',                            ''),
     ('EEMC:EcalEndcapNTruthClusters:logWeightBase',              '4.6',                            '*'),
     ('EEMC:EcalEndcapNTruthClusters:moduleDimZName',             '',                               ''),
@@ -232,7 +232,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapNClusters:depthCorrection',                 '0',                              ''),
     ('EEMC:EcalEndcapNClusters:energyWeight',                    'log',                            ''),
     ('EEMC:EcalEndcapNClusters:moduleDimZName',                  '',                               ''),
-    ('EEMC:EcalEndcapNClusters:enableEtaBounds',                 '0',                              ''),
+    ('EEMC:EcalEndcapNClusters:enableEtaBounds',                 'false',                          ''),
 
     # Positive Endcap
     ('EEMC:EcalEndcapPRawHits:capacityADC',                      '2^14',                           '*'),
@@ -272,10 +272,10 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPIslandProtoClusters:minClusterCenterEdep', '10.0*MeV',                       '*'),
     ('EEMC:EcalEndcapPIslandProtoClusters:minClusterHitEdep',    '0',                              ''),
     ('EEMC:EcalEndcapPIslandProtoClusters:sectorDist',           '5',                              ''),
-    ('EEMC:EcalEndcapPIslandProtoClusters:splitCluster',         '0',                              ''),
+    ('EEMC:EcalEndcapPIslandProtoClusters:splitCluster',         'false',                          ''),
 
     ('EEMC:EcalEndcapPTruthClusters:depthCorrection',            '0',                              ''),
-    ('EEMC:EcalEndcapPTruthClusters:enableEtaBounds',            '1',                              '*'),
+    ('EEMC:EcalEndcapPTruthClusters:enableEtaBounds',            'true',                           '*'),
     ('EEMC:EcalEndcapPTruthClusters:energyWeight',               'log',                            ''),
     ('EEMC:EcalEndcapPTruthClusters:logWeightBase',              '6.2',                            '*'),
     ('EEMC:EcalEndcapPTruthClusters:moduleDimZName',             '',                               ''),
@@ -287,7 +287,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPClusters:depthCorrection',                 '0',                              ''),
     ('EEMC:EcalEndcapPClusters:energyWeight',                    'log',                            ''),
     ('EEMC:EcalEndcapPClusters:moduleDimZName',                  '',                               ''),
-    ('EEMC:EcalEndcapPClusters:enableEtaBounds',                 '0',                              ''),
+    ('EEMC:EcalEndcapPClusters:enableEtaBounds',                 'false',                          ''),
 
     # Positive Endcap insert
     ('EEMC:EcalEndcapPInsertRawHits:capacityADC',                      '2^14',                           '*'),
@@ -327,10 +327,10 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPInsertIslandProtoClusters:minClusterCenterEdep', '10.0*MeV',                       '*'),
     ('EEMC:EcalEndcapPInsertIslandProtoClusters:minClusterHitEdep',    '0',                              ''),
     ('EEMC:EcalEndcapPInsertIslandProtoClusters:sectorDist',           '5',                              ''),
-    ('EEMC:EcalEndcapPInsertIslandProtoClusters:splitCluster',         '0',                              ''),
+    ('EEMC:EcalEndcapPInsertIslandProtoClusters:splitCluster',         'false',                          ''),
 
     ('EEMC:EcalEndcapPInsertTruthClusters:depthCorrection',            '0',                              ''),
-    ('EEMC:EcalEndcapPInsertTruthClusters:enableEtaBounds',            '1',                              '*'),
+    ('EEMC:EcalEndcapPInsertTruthClusters:enableEtaBounds',            'true',                           '*'),
     ('EEMC:EcalEndcapPInsertTruthClusters:energyWeight',               'log',                            ''),
     ('EEMC:EcalEndcapPInsertTruthClusters:logWeightBase',              '6.2',                            '*'),
     ('EEMC:EcalEndcapPInsertTruthClusters:moduleDimZName',             '',                               ''),
@@ -342,7 +342,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPInsertClusters:depthCorrection',                 '0',                              ''),
     ('EEMC:EcalEndcapPInsertClusters:energyWeight',                    'log',                            ''),
     ('EEMC:EcalEndcapPInsertClusters:moduleDimZName',                  '',                               ''),
-    ('EEMC:EcalEndcapPInsertClusters:enableEtaBounds',                 '0',                              ''),
+    ('EEMC:EcalEndcapPInsertClusters:enableEtaBounds',                 'false',                          ''),
 
     # B0ECAL - Far forward B0 Ecal
     # -----------------
@@ -375,7 +375,7 @@ eicrecon_reco_flags = [
     ('B0ECAL:B0ECalRecHits:thresholdValue',                   '3',                                       '*'),
 
     ('B0ECAL:B0ECalIslandProtoClusters:input_tag',            'B0ECalRecHits',                           ''),
-    ('B0ECAL:B0ECalIslandProtoClusters:splitCluster',         '0',                              '*'),
+    ('B0ECAL:B0ECalIslandProtoClusters:splitCluster',         'false',                          '*'),
     ('B0ECAL:B0ECalIslandProtoClusters:minClusterHitEdep',    '1.0*MeV',                        '*'),
     ('B0ECAL:B0ECalIslandProtoClusters:minClusterCenterEdep', '30.0*MeV',                       '*'),
     ('B0ECAL:B0ECalIslandProtoClusters:sectorDist',           '5.0*cm',                         '*'),
@@ -392,7 +392,7 @@ eicrecon_reco_flags = [
     ('B0ECAL:B0ECalClusters:depthCorrection',                 '0',                              ''),
     ('B0ECAL:B0ECalClusters:energyWeight',                    'log',                            ''),
     ('B0ECAL:B0ECalClusters:moduleDimZName',                  '',                               ''),
-    ('B0ECAL:B0ECalClusters:enableEtaBounds',                 '0',                              ''),
+    ('B0ECAL:B0ECalClusters:enableEtaBounds',                 'false',                          ''),
 
     # HCAL Barrel
     # -----------
@@ -425,7 +425,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalBarrelRecHits:thresholdValue',                    '1',                              '*'),
 
     ('HCAL:HcalBarrelClusters:depthCorrection',                  '0',                              ''),
-    ('HCAL:HcalBarrelClusters:enableEtaBounds',                  '0',                              ''),
+    ('HCAL:HcalBarrelClusters:enableEtaBounds',                  'false',                          ''),
     ('HCAL:HcalBarrelClusters:energyWeight',                     'log',                            ''),
     ('HCAL:HcalBarrelClusters:input_protoclust_tag',             'HcalBarrelIslandProtoClusters',  ''),
     ('HCAL:HcalBarrelClusters:input_simhit_tag',                 'HcalBarrelHits',                 ''),
@@ -442,14 +442,14 @@ eicrecon_reco_flags = [
     ('HCAL:HcalBarrelIslandProtoClusters:minClusterCenterEdep',  '30.0*MeV',                       ''),
     ('HCAL:HcalBarrelIslandProtoClusters:minClusterHitEdep',     '3.0*MeV',                       '*'),
     ('HCAL:HcalBarrelIslandProtoClusters:sectorDist',            '5',                              ''),
-    ('HCAL:HcalBarrelIslandProtoClusters:splitCluster',          '0',                              '*'),
+    ('HCAL:HcalBarrelIslandProtoClusters:splitCluster',          'false',                          '*'),
 
     ('HCAL:HcalBarrelMergedHits:fields',                         'tower,tile',                     ''),
     ('HCAL:HcalBarrelMergedHits:input_tag',                      'HcalBarrelRecHits',              ''),
     ('HCAL:HcalBarrelMergedHits:refs',                           '1,0',                            ''),
 
     ('HCAL:HcalBarrelTruthClusters:depthCorrection',             '0',                              ''),
-    ('HCAL:HcalBarrelTruthClusters:enableEtaBounds',             '0',                              ''),
+    ('HCAL:HcalBarrelTruthClusters:enableEtaBounds',             'false',                          ''),
     ('HCAL:HcalBarrelTruthClusters:energyWeight',                'log',                            ''),
     ('HCAL:HcalBarrelTruthClusters:input_protoclust_tag',        'HcalBarrelTruthProtoClusters',   ''),
     ('HCAL:HcalBarrelTruthClusters:input_simhit_tag',            'HcalBarrelHits',                 ''),
@@ -501,10 +501,10 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapNIslandProtoClusters:minClusterCenterEdep', '30*MeV',                         '*'),
     ('HCAL:HcalEndcapNIslandProtoClusters:minClusterHitEdep',    '0',                              ''),
     ('HCAL:HcalEndcapNIslandProtoClusters:sectorDist',           '5',                              ''),
-    ('HCAL:HcalEndcapNIslandProtoClusters:splitCluster',         '1',                              ''),
+    ('HCAL:HcalEndcapNIslandProtoClusters:splitCluster',         'true',                           ''),
 
     ('HCAL:HcalEndcapNTruthClusters:depthCorrection',            '0',                              ''),
-    ('HCAL:HcalEndcapNTruthClusters:enableEtaBounds',            '0',                              ''),
+    ('HCAL:HcalEndcapNTruthClusters:enableEtaBounds',            'false',                          ''),
     ('HCAL:HcalEndcapNTruthClusters:energyWeight',               'log',                            ''),
     ('HCAL:HcalEndcapNTruthClusters:input_protoclust_tag',       'HcalEndcapNTruthProtoClusters',  ''),
     ('HCAL:HcalEndcapNTruthClusters:input_simhit_tag',           'HcalEndcapNHits',                ''),
@@ -513,7 +513,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapNTruthClusters:samplingFraction',           '1',                              ''),
 
     ('HCAL:HcalEndcapNClusters:depthCorrection',                 '0',                              ''),
-    ('HCAL:HcalEndcapNClusters:enableEtaBounds',                 '0',                              ''),
+    ('HCAL:HcalEndcapNClusters:enableEtaBounds',                 'false',                          ''),
     ('HCAL:HcalEndcapNClusters:energyWeight',                    'log',                            ''),
     ('HCAL:HcalEndcapNClusters:input_protoclust_tag',            'HcalEndcapNIslandProtoClusters', ''),
     ('HCAL:HcalEndcapNClusters:input_simhit_tag',                'HcalEndcapNHits',                ''),
@@ -565,10 +565,10 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapPIslandProtoClusters:minClusterCenterEdep', '30.0*MeV',                       '*'),
     ('HCAL:HcalEndcapPIslandProtoClusters:minClusterHitEdep',    '0',                              ''),
     ('HCAL:HcalEndcapPIslandProtoClusters:sectorDist',           '5',                              ''),
-    ('HCAL:HcalEndcapPIslandProtoClusters:splitCluster',         '1',                              ''),
+    ('HCAL:HcalEndcapPIslandProtoClusters:splitCluster',         'true',                           ''),
 
     ('HCAL:HcalEndcapPTruthClusters:depthCorrection',            '0',                              ''),
-    ('HCAL:HcalEndcapPTruthClusters:enableEtaBounds',            '0',                              ''),
+    ('HCAL:HcalEndcapPTruthClusters:enableEtaBounds',            'false',                          ''),
     ('HCAL:HcalEndcapPTruthClusters:energyWeight',               'log',                            ''),
     ('HCAL:HcalEndcapPTruthClusters:input_protoclust_tag',       'HcalEndcapPTruthProtoClusters',  ''),
     ('HCAL:HcalEndcapPTruthClusters:input_simhit_tag',           'HcalEndcapPHits',                ''),
@@ -577,7 +577,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapPTruthClusters:samplingFraction',           '0.025',                          '*'),
 
     ('HCAL:HcalEndcapPClusters:depthCorrection',                 '0',                              ''),
-    ('HCAL:HcalEndcapPClusters:enableEtaBounds',                 '0',                              ''),
+    ('HCAL:HcalEndcapPClusters:enableEtaBounds',                 'false',                          ''),
     ('HCAL:HcalEndcapPClusters:energyWeight',                    'log',                            ''),
     ('HCAL:HcalEndcapPClusters:input_protoclust_tag',            'HcalEndcapPIslandProtoClusters', ''),
     ('HCAL:HcalEndcapPClusters:input_simhit_tag',                'HcalEndcapPHits',                ''),
@@ -625,10 +625,10 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapPInsertIslandProtoClusters:minClusterCenterEdep', '0.03*GeV',                              ''),
     ('HCAL:HcalEndcapPInsertIslandProtoClusters:minClusterHitEdep',    '0',                                     ''),
     ('HCAL:HcalEndcapPInsertIslandProtoClusters:sectorDist',           '5',                                     ''),
-    ('HCAL:HcalEndcapPInsertIslandProtoClusters:splitCluster',         '1',                                     ''),
+    ('HCAL:HcalEndcapPInsertIslandProtoClusters:splitCluster',         'true',                                  ''),
 
     ('HCAL:HcalEndcapPInsertTruthClusters:depthCorrection',            '0',                                     ''),
-    ('HCAL:HcalEndcapPInsertTruthClusters:enableEtaBounds',            '0',                                     ''),
+    ('HCAL:HcalEndcapPInsertTruthClusters:enableEtaBounds',            'false',                                 ''),
     ('HCAL:HcalEndcapPInsertTruthClusters:energyWeight',               'log',                                   ''),
     ('HCAL:HcalEndcapPInsertTruthClusters:input_protoclust_tag',       'HcalEndcapPInsertTruthProtoClusters',   ''),
     ('HCAL:HcalEndcapPInsertTruthClusters:input_simhit_tag',           'HcalEndcapPInsertHits',                 ''),
@@ -637,7 +637,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapPInsertTruthClusters:samplingFraction',           '1',                                     ''),
 
     ('HCAL:HcalEndcapPInsertClusters:depthCorrection',                 '0',                                     ''),
-    ('HCAL:HcalEndcapPInsertClusters:enableEtaBounds',                 '0',                                     ''),
+    ('HCAL:HcalEndcapPInsertClusters:enableEtaBounds',                 'false',                                 ''),
     ('HCAL:HcalEndcapPInsertClusters:energyWeight',                    'log',                                   ''),
     ('HCAL:HcalEndcapPInsertClusters:input_protoclust_tag',            'HcalEndcapPInsertIslandProtoClusters',  ''),
     ('HCAL:HcalEndcapPInsertClusters:input_simhit_tag',                'HcalEndcapPInsertHits',                 ''),
@@ -677,7 +677,7 @@ eicrecon_reco_flags = [
     ('ZDC:ZDCEcalRecHits:thresholdValue',                        '0',                              ''),
 
     ('ZDC:ZDCEcalClusters:depthCorrection',                      '0',                              ''),
-    ('ZDC:ZDCEcalClusters:enableEtaBounds',                      '0',                              ''),
+    ('ZDC:ZDCEcalClusters:enableEtaBounds',                      'false',                          ''),
     ('ZDC:ZDCEcalClusters:energyWeight',                         'log',                            ''),
     ('ZDC:ZDCEcalClusters:input_protoclust_tag',                 'ZDCEcalIslandProtoClusters',     ''),
     ('ZDC:ZDCEcalClusters:input_simhit_tag',                     'ZDCEcalHits',                    ''),
@@ -694,10 +694,10 @@ eicrecon_reco_flags = [
     ('ZDC:ZDCEcalIslandProtoClusters:minClusterCenterEdep',      '3.*MeV',                         '*'),
     ('ZDC:ZDCEcalIslandProtoClusters:minClusterHitEdep',         '0.1*MeV',                        '*'),
     ('ZDC:ZDCEcalIslandProtoClusters:sectorDist',                '5',                              ''),
-    ('ZDC:ZDCEcalIslandProtoClusters:splitCluster',              '1',                              ''),
+    ('ZDC:ZDCEcalIslandProtoClusters:splitCluster',              'true',                           ''),
 
     ('ZDC:ZDCEcalTruthClusters:depthCorrection',                 '0',                              ''),
-    ('ZDC:ZDCEcalTruthClusters:enableEtaBounds',                 '0',                              ''),
+    ('ZDC:ZDCEcalTruthClusters:enableEtaBounds',                 'false',                          ''),
     ('ZDC:ZDCEcalTruthClusters:energyWeight',                    'log',                            ''),
     ('ZDC:ZDCEcalTruthClusters:input_protoclust_tag',            'ZDCEcalTruthProtoClusters',      ''),
     ('ZDC:ZDCEcalTruthClusters:input_simhit_tag',                'ZDCEcalHits',                    ''),
@@ -747,7 +747,7 @@ eicrecon_reco_flags = [
     ('DRICH:DRICHRawHits:pedMean',         '200.0',     ''                                                      ),
     ('DRICH:DRICHRawHits:pedError',        '3.0',       ''                                                      ),
     ('DRICH:DRICHRawHits:enablePixelGaps', 'true',      'enable/disable removal of hits in gaps between pixels' ),
-    # ('DRICH:DRICHRawHits:pixelSize',       '3.0*mm',    'pixel (active) size'                                   ), # FIXME: do not use until https://github.com/eic/EICrecon/issues/383 is resolved
+    ('DRICH:DRICHRawHits:pixelSize',       '3.0*mm',    'pixel (active) size'                                   ),
     ('DRICH:DRICHRawHits:safetyFactor',    '0.7',       'overall safety factor'                                 ),
     # ('DRICH:DRICHRawHits:quantumEfficiency', '...', 'quantum efficiency' ), # FIXME cannot define here; instead it is hard coded in src/algorithms/digi/PhotoMultiplierHitDigiConfig.h
 
@@ -946,7 +946,7 @@ if __name__ == "__main__":
     default_parameters = [
         f"-Pplugins=dump_flags",
         f"-Pdump_flags:python=all_flags_dump_from_run.py",
-        f"-Pjana:debug_plugin_loading=1",
+        f"-Pjana:debug_plugin_loading=true",
         f"-Pjana:nevents={args.nevents}",
         f"-Pacts:MaterialMap=calibrations/materials-map.cbor",
         f"-Ppodio:output_file={args.output_base_name}.tree.edm4eic.root",
