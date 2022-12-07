@@ -25,7 +25,7 @@ eicrecon_reco_flags = [
 
     # digitization
     ('BEMC:EcalBarrelSciGlassRawHits:input_tag',                         'EcalBarrelSciGlassHits',         'Name of input collection to use'),
-    ('BEMC:EcalBarrelSciGlassRawHits:capacityADC',                       'capacityBitsADC=14',             '*'),
+    ('BEMC:EcalBarrelSciGlassRawHits:capacityADC',                       '2^14',                           '*'),
     ('BEMC:EcalBarrelSciGlassRawHits:dynamicRangeADC',                   '20*GeV',                         '*'),
     ('BEMC:EcalBarrelSciGlassRawHits:energyResolutions',                 '0.0,0.02,0.0',                   '*'),
     ('BEMC:EcalBarrelSciGlassRawHits:fieldRefNumbers',                   '',                               ''),
@@ -40,7 +40,7 @@ eicrecon_reco_flags = [
 
     # Hits reco
     ('BEMC:EcalBarrelSciGlassRecHits:input_tag',                         'EcalBarrelSciGlassRawHits',      'Name of input collection to use'),
-    ('BEMC:EcalBarrelSciGlassRecHits:capacityADC',                       'capacityBitsADC=14',             '*'),
+    ('BEMC:EcalBarrelSciGlassRecHits:capacityADC',                       '2^14',                           '*'),
     ('BEMC:EcalBarrelSciGlassRecHits:dynamicRangeADC',                   '20*GeV',                         '*'),
     ('BEMC:EcalBarrelSciGlassRecHits:pedestalMean',                      '100',                            '*'),
     ('BEMC:EcalBarrelSciGlassRecHits:pedestalSigma',                     '1',                              '*'),
@@ -85,7 +85,7 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelImagingRawHits:input_tag',                 'EcalBarrelImagingHits',           'Name of input collection to use'),
     ('BEMC:EcalBarrelImagingRawHits:energyResolutions',         '0.0,0.02,0.0',                    ''),
     ('BEMC:EcalBarrelImagingRawHits:timeResolution',            '0.0*ns',                          ''),
-    ('BEMC:EcalBarrelImagingRawHits:capacityADC',               'capacityBitsADC=13',              ''),
+    ('BEMC:EcalBarrelImagingRawHits:capacityADC',               '2^13',                            ''),
     ('BEMC:EcalBarrelImagingRawHits:dynamicRangeADC',           '3*MeV',                           ''),
     ('BEMC:EcalBarrelImagingRawHits:pedestalMean',              '100',                             ''),
     ('BEMC:EcalBarrelImagingRawHits:pedestalSigma',             '14',                              ''),
@@ -99,7 +99,7 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelScFiRawHits:input_tag',                     'EcalBarrelScFiHits',             'Name of input collection to use'),
     ('BEMC:EcalBarrelScFiRawHits:energyResolutions',             '',                               ''),
     ('BEMC:EcalBarrelScFiRawHits:timeResolution',                '0*ns',                           ''),
-    ('BEMC:EcalBarrelScFiRawHits:capacityADC',                   'capacityBitsADC=14',             ''),
+    ('BEMC:EcalBarrelScFiRawHits:capacityADC',                   '2^14',                           ''),
     ('BEMC:EcalBarrelScFiRawHits:dynamicRangeADC',               '750*MeV',                        ''),
     ('BEMC:EcalBarrelScFiRawHits:pedestalMean',                  '20',                             ''),
     ('BEMC:EcalBarrelScFiRawHits:pedestalSigma',                 '0.3',                            ''),
@@ -113,7 +113,7 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelImagingRecHits:input_tag',                 'EcalBarrelImagingRawHits',        'Name of input collection to use'),
     ('BEMC:EcalBarrelImagingRecHits:layerField',                'layer',                           ''),
     ('BEMC:EcalBarrelImagingRecHits:sectorField',               'module',                          ''),
-    ('BEMC:EcalBarrelImagingRecHits:capacityADC',               'capacityBitsADC=13',              ''),
+    ('BEMC:EcalBarrelImagingRecHits:capacityADC',               '2^13',                            ''),
     ('BEMC:EcalBarrelImagingRecHits:pedestalMean',              '100',                             ''),
     ('BEMC:EcalBarrelImagingRecHits:dynamicRangeADC',           '3*MeV',                           ''),
     ('BEMC:EcalBarrelImagingRecHits:pedSigmaADC',               '14',                              ''),
@@ -124,7 +124,7 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelScFiRecHits:readout',                      'EcalBarrelScFiHits',              ''),
     ('BEMC:EcalBarrelScFiRecHits:layerField',                   'layer',                           ''),
     ('BEMC:EcalBarrelScFiRecHits:sectorField',                  'module',                          ''),
-    ('BEMC:EcalBarrelScFiRecHits:capacityADC',                  'capacityBitsADC=14',              ''),
+    ('BEMC:EcalBarrelScFiRecHits:capacityADC',                  '2^14',                            ''),
     ('BEMC:EcalBarrelScFiRecHits:dynamicRangeADC',              '750*MeV',                         ''),
     ('BEMC:EcalBarrelScFiRecHits:pedestalMean',                 '20',                              ''),
     ('BEMC:EcalBarrelScFiRecHits:pedestalSigma',                '0.3',                             ''),
@@ -180,7 +180,7 @@ eicrecon_reco_flags = [
 # EEMC - Endcap EMC
     # -----------------
     # Negative Endcap
-    ('EEMC:EcalEndcapNRawHits:capacityADC',                      'capacityBitsADC=14',             '*'),
+    ('EEMC:EcalEndcapNRawHits:capacityADC',                      '2^14',                           '*'),
     ('EEMC:EcalEndcapNRawHits:dynamicRangeADC',                  '20*GeV',                         '*'),
     ('EEMC:EcalEndcapNRawHits:energyResolutions',                '0.0,0.02,0.0',                   '*'),
     ('EEMC:EcalEndcapNRawHits:fieldRefNumbers',                  '',                               ''),
@@ -193,7 +193,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapNRawHits:signalSumFields',                  '',                               ''),
     ('EEMC:EcalEndcapNRawHits:timeResolution',                   '0',                              ''),
 
-    ('EEMC:EcalEndcapNRecHits:capacityADC',                      'capacityBitsADC=14',             '*'),
+    ('EEMC:EcalEndcapNRecHits:capacityADC',                      '2^14',                           '*'),
     ('EEMC:EcalEndcapNRecHits:dynamicRangeADC',                  '20*GeV',                         '*'),
     ('EEMC:EcalEndcapNRecHits:geoServiceName',                   'geoServiceName',                 ''),
     ('EEMC:EcalEndcapNRecHits:layerField',                       '',                               ''),
@@ -235,7 +235,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapNClusters:enableEtaBounds',                 '0',                              ''),
 
     # Positive Endcap
-    ('EEMC:EcalEndcapPRawHits:capacityADC',                      'capacityBitsADC=14',             '*'),
+    ('EEMC:EcalEndcapPRawHits:capacityADC',                      '2^14',                           '*'),
     ('EEMC:EcalEndcapPRawHits:dynamicRangeADC',                  '3*GeV',                          '*'),
     ('EEMC:EcalEndcapPRawHits:energyResolutions',                '0.00316,0.0015,0.0',             '*'),
     ('EEMC:EcalEndcapPRawHits:fieldRefNumbers',                  '1,1',                            '*'),
@@ -248,7 +248,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPRawHits:signalSumFields',                  '',                               ''),
     ('EEMC:EcalEndcapPRawHits:timeResolution',                   '0',                              ''),
 
-    ('EEMC:EcalEndcapPRecHits:capacityADC',                      'capacityBitsADC=14',             '*'),
+    ('EEMC:EcalEndcapPRecHits:capacityADC',                      '2^14',                           '*'),
     ('EEMC:EcalEndcapPRecHits:dynamicRangeADC',                  '3*GeV',                          '*'),
     ('EEMC:EcalEndcapPRecHits:geoServiceName',                   'geoServiceName',                 ''),
     ('EEMC:EcalEndcapPRecHits:layerField',                       '',                               ''),
@@ -290,7 +290,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPClusters:enableEtaBounds',                 '0',                              ''),
 
     # Positive Endcap insert
-    ('EEMC:EcalEndcapPInsertRawHits:capacityADC',                      'capacityBitsADC=14',             '*'),
+    ('EEMC:EcalEndcapPInsertRawHits:capacityADC',                      '2^14',                           '*'),
     ('EEMC:EcalEndcapPInsertRawHits:dynamicRangeADC',                  '3*GeV',                          '*'),
     ('EEMC:EcalEndcapPInsertRawHits:energyResolutions',                '0.00316,0.0015,0.0',             '*'),
     ('EEMC:EcalEndcapPInsertRawHits:fieldRefNumbers',                  '1,1',                            '*'),
@@ -303,7 +303,7 @@ eicrecon_reco_flags = [
     ('EEMC:EcalEndcapPInsertRawHits:signalSumFields',                  '',                               ''),
     ('EEMC:EcalEndcapPInsertRawHits:timeResolution',                   '0',                              ''),
 
-    ('EEMC:EcalEndcapPInsertRecHits:capacityADC',                      'capacityBitsADC=14',             '*'),
+    ('EEMC:EcalEndcapPInsertRecHits:capacityADC',                      '2^14',                           '*'),
     ('EEMC:EcalEndcapPInsertRecHits:dynamicRangeADC',                  '3*GeV',                          '*'),
     ('EEMC:EcalEndcapPInsertRecHits:geoServiceName',                   'geoServiceName',                 ''),
     ('EEMC:EcalEndcapPInsertRecHits:layerField',                       '',                               ''),
@@ -346,7 +346,7 @@ eicrecon_reco_flags = [
 
     # B0ECAL - Far forward B0 Ecal
     # -----------------
-    ('B0ECAL:B0ECalRawHits:capacityADC',                      'capacityBitsADC=14',                      '*'),
+    ('B0ECAL:B0ECalRawHits:capacityADC',                      '2^14',                                    '*'),
     ('B0ECAL:B0ECalRawHits:dynamicRangeADC',                  '20*GeV',                                   '*'),
     ('B0ECAL:B0ECalRawHits:energyResolutions',                '0.0,0.02,0.0',                            '*'),
     ('B0ECAL:B0ECalRawHits:fieldRefNumbers',                  '',                                        ''),
@@ -359,7 +359,7 @@ eicrecon_reco_flags = [
     ('B0ECAL:B0ECalRawHits:signalSumFields',                  '',                                        ''),
     ('B0ECAL:B0ECalRawHits:timeResolution',                   '0',                                       ''),
 
-    ('B0ECAL:B0ECalRecHits:capacityADC',                      'capacityBitsADC=14',                      '*'),
+    ('B0ECAL:B0ECalRecHits:capacityADC',                      '2^14',                                    '*'),
     ('B0ECAL:B0ECalRecHits:dynamicRangeADC',                  '20*GeV',                                  '*'),
     ('B0ECAL:B0ECalRecHits:geoServiceName',                   '',                                        ''),
     ('B0ECAL:B0ECalRecHits:layerField',                       '',                                        ''),
@@ -396,7 +396,7 @@ eicrecon_reco_flags = [
 
     # HCAL Barrel
     # -----------
-    ('HCAL:HcalBarrelRawHits:capacityADC',                       'capacityBitsADC=8',              '*'),
+    ('HCAL:HcalBarrelRawHits:capacityADC',                       '2^8',                            '*'),
     ('HCAL:HcalBarrelRawHits:dynamicRangeADC',                   '50*MeV',                         '*'),
     ('HCAL:HcalBarrelRawHits:energyResolutions',                 '',                               ''),
     ('HCAL:HcalBarrelRawHits:fieldRefNumbers',                   '1,0',                            '*'),
@@ -409,7 +409,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalBarrelRawHits:signalSumFields',                   '',                               ''),
     ('HCAL:HcalBarrelRawHits:timeResolution',                    '0',                              ''),
 
-    ('HCAL:HcalBarrelRecHits:capacityADC',                       'capacityBitsADC=8',              '*'),
+    ('HCAL:HcalBarrelRecHits:capacityADC',                       '2^8',                            '*'),
     ('HCAL:HcalBarrelRecHits:dynamicRangeADC',                   '20*MeV',                         '*'),
     ('HCAL:HcalBarrelRecHits:geoServiceName',                    'geoServiceName',                 ''),
     ('HCAL:HcalBarrelRecHits:layerField',                        'tower',                          ''),
@@ -459,7 +459,7 @@ eicrecon_reco_flags = [
 
     # HCAL Negative endcap
     # --------------------
-    ('HCAL:HcalEndcapNRawHits:capacityADC',                      'capacityBitsADC=10',             '*'),
+    ('HCAL:HcalEndcapNRawHits:capacityADC',                      '2^10',                           '*'),
     ('HCAL:HcalEndcapNRawHits:dynamicRangeADC',                  '3.6*MeV',                            '*'),
     ('HCAL:HcalEndcapNRawHits:energyResolutions',                '',                               ''),
     ('HCAL:HcalEndcapNRawHits:fieldRefNumbers',                  '',                               ''),
@@ -472,7 +472,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapNRawHits:signalSumFields',                  '',                               ''),
     ('HCAL:HcalEndcapNRawHits:timeResolution',                   '0',                              ''),
 
-    ('HCAL:HcalEndcapNRecHits:capacityADC',                      'capacityBitsADC=10',             '*'),
+    ('HCAL:HcalEndcapNRecHits:capacityADC',                      '2^10',                           '*'),
     ('HCAL:HcalEndcapNRecHits:dynamicRangeADC',                  '3.6*MeV',                            '*'),
     ('HCAL:HcalEndcapNRecHits:geoServiceName',                   'geoServiceName',                 ''),
     ('HCAL:HcalEndcapNRecHits:layerField',                       '',                               ''),
@@ -523,7 +523,7 @@ eicrecon_reco_flags = [
 
     # HCAL Positive endcap
     # --------------------
-    ('HCAL:HcalEndcapPRawHits:capacityADC',                      'capacityBitsADC=10',             '*'),
+    ('HCAL:HcalEndcapPRawHits:capacityADC',                      '2^10',                           '*'),
     ('HCAL:HcalEndcapPRawHits:dynamicRangeADC',                  '3.6*GeV',                            '*'),
     ('HCAL:HcalEndcapPRawHits:energyResolutions',                '',                               ''),
     ('HCAL:HcalEndcapPRawHits:fieldRefNumbers',                  '',                               ''),
@@ -536,7 +536,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapPRawHits:signalSumFields',                  '',                               ''),
     ('HCAL:HcalEndcapPRawHits:timeResolution',                   '0',                              ''),
 
-    ('HCAL:HcalEndcapPRecHits:capacityADC',                      'capacityBitsADC=10',             '*'),
+    ('HCAL:HcalEndcapPRecHits:capacityADC',                      '2^10',                           '*'),
     ('HCAL:HcalEndcapPRecHits:dynamicRangeADC',                  '3.6*GeV',                            '*'),
     ('HCAL:HcalEndcapPRecHits:geoServiceName',                   'geoServiceName',                 ''),
     ('HCAL:HcalEndcapPRecHits:layerField',                       '',                               ''),
@@ -588,7 +588,7 @@ eicrecon_reco_flags = [
 
     # HCAL - Positive Endcap insert
     # ------------------------------------------
-    ('HCAL:HcalEndcapPInsertRawHits:capacityADC',                      'capacityBitsADC=15',                    '*'),
+    ('HCAL:HcalEndcapPInsertRawHits:capacityADC',                      '2^15',                                  '*'),
     ('HCAL:HcalEndcapPInsertRawHits:dynamicRangeADC',                  '200*MeV',                               '*'),
     ('HCAL:HcalEndcapPInsertRawHits:energyResolutions',                '',                                      ''),
     ('HCAL:HcalEndcapPInsertRawHits:fieldRefNumbers',                  '',                                      ''),
@@ -601,7 +601,7 @@ eicrecon_reco_flags = [
     ('HCAL:HcalEndcapPInsertRawHits:signalSumFields',                  '',                                      ''),
     ('HCAL:HcalEndcapPInsertRawHits:timeResolution',                   '0',                                     ''),
 
-    ('HCAL:HcalEndcapPInsertRecHits:capacityADC',                      'capacityBitsADC=15',                    '*'),
+    ('HCAL:HcalEndcapPInsertRecHits:capacityADC',                      '2^15',                                  '*'),
     ('HCAL:HcalEndcapPInsertRecHits:dynamicRangeADC',                  '200*MeV',                               '*'),
     ('HCAL:HcalEndcapPInsertRecHits:geoServiceName',                   'geoServiceName',                        ''),
     ('HCAL:HcalEndcapPInsertRecHits:layerField',                       '',                                      ''),
