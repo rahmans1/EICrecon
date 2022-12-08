@@ -937,10 +937,12 @@ if __name__ == "__main__":
     parser.add_argument('input_file', help="Input file name")
     parser.add_argument('output_base_name', help="Output files names (no file extensions here)")
     parser.add_argument('-n', '--nevents', default="0", help="Number of events to process")
+    parser.add_argument('-c', '--configs', action='store_true', help="Display configuration parameters")
     args = parser.parse_args()
 
     run_command = [
-        f"eicrecon"
+        f"eicrecon",
+        f'-c' if args.configs else f''
     ]
 
     default_parameters = [
