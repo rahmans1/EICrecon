@@ -25,10 +25,36 @@ namespace jana::parser {
   class Parser {
     public:
 
-      Parser() : debug(true) {
-        // FIXME: how to set the 'correct' units
-        // m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
-        //     1.e+3, 1./1.60217733e-25, 1.e+9, 1./1.60217733e-10, 1.0, 1.0, 1.0); // Geant4
+      Parser() : debug(false) {
+
+        //
+        // FIXME: decide which unit system to use
+        //
+
+        // Geant4 unit system 
+        // 1 = millimeter = MeV = nanosecond = positron charge = kelvin = mole = candela = radian = steradian
+        /*
+        m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
+            1.e+3, 1./1.60217733e-25, 1.e+9, 1./1.60217733e-10, 1.0, 1.0, 1.0);
+            */
+
+        // Geant4 convention, using DD4hep names
+        /*
+        m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
+            dd4hep::millimeter,
+            dd4hep::gram * 1e-6,
+            dd4hep::nanosecond,
+            dd4hep::ampere,
+            dd4hep::kelvin,
+            dd4hep::mole,
+            dd4hep::candela,
+            dd4hep::radian
+            );
+            */
+
+        // DD4hep default system
+        // 1 = centimeter = GeV = second = nanoampere = kelvin = mole = candela = radian
+        // /*
         m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
             dd4hep::meter,
             dd4hep::kilogram,
@@ -38,7 +64,8 @@ namespace jana::parser {
             dd4hep::mole,
             dd4hep::candela,
             dd4hep::radian
-            ); // try to use what DD4hep is using
+            );
+            // */
       };
       ~Parser() {};
 
