@@ -11,6 +11,7 @@
 // DD4Hep
 #include <DD4hep/DD4hepUnits.h>
 #include <Evaluator/Evaluator.h>
+#include <Evaluator/detail/Evaluator.h>
 
 namespace jana::parser {
   
@@ -26,9 +27,9 @@ namespace jana::parser {
 
       Parser() : debug(true) {
         // FIXME: how to set the 'correct' units
-        // m_eval = std::make_unique<dd4hep::tools::Evaluator>(
+        // m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
         //     1.e+3, 1./1.60217733e-25, 1.e+9, 1./1.60217733e-10, 1.0, 1.0, 1.0); // Geant4
-        m_eval = std::make_unique<dd4hep::tools::Evaluator>(
+        m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
             dd4hep::meter,
             dd4hep::kilogram,
             dd4hep::second,
@@ -51,39 +52,60 @@ namespace jana::parser {
         // handle empty string, which would otherwise cause en error in parsing
         if(expr=="") return { true, expr };
 
-        // handle comma-separated lists
-        // 
-        // TODO: if `expr` contains commas, tokenize and run each field through `dd4hep_to_string`, then re-combine
-        //       to a comma-separated list of new strings
-        //
-
         // call Evaluator::evaluate to parse units and do the math
-        auto parsed = m_eval->evaluate(expr);
+        auto parsed = m_eval->evaluate(expr.c_str());
 
         // return a `Result`, with the calculated number re-stringified without any units
-        switch(parsed.first) {
+        if(debug) fmt::print("-> status: {}\n", parsed.status());
+        switch(parsed.status()) {
 
-          // likely a number that was parsed successfuly; stringify it
           case dd4hep::tools::Evaluator::OK:
-            if(debug) fmt::print("-> result: {} -> string: '{}'\n", parsed.second, std::to_string(parsed.second));
-            return { true, std::to_string(parsed.second) };
+            { // likely a number that was parsed successfuly; stringify it
+              std::stringstream ss;  // FIXME: using JParameterManager::Stringify returns "'Stringify' is not member" error
+              ss << parsed.result(); //        instead, copy Stringify's implementation here
+              auto result = ss.str();
+              if(debug) fmt::print("-> evaluator result: {}\n-> string: '{}'\n", parsed.result(), result);
+              return { true, result };
+            }
 
-          // likely a string (as long as it's not any specific unit name); return `expr` as is
           case dd4hep::tools::Evaluator::ERROR_UNKNOWN_VARIABLE:
-            if(expr.find('*') != std::string::npos) // try to detect units typos, since here we assumed it was parsed as a string
-              fmt::print(stderr,"WARNING: parsing '{}' as a string; is there a typo in the units?\n",expr);
-            if(debug) fmt::print("-> string '{}'\n", expr);
-            return { true, expr };
+            { // likely a string (as long as it's not any specific unit name); return `expr` as is
+              if(expr.find('*') != std::string::npos) // try to detect units typos
+                fmt::print(stderr,"WARNING: parsing '{}' as a string; is there a typo in the units?\n",expr);
+              if(debug) fmt::print("-> string: '{}'\n", expr);
+              return { true, expr };
+            }
 
-          // likely an error; complain and return `expr` as is
-          default:
-            fmt::print(stderr,"ERROR: cannot evaluate '{}'\n",expr);
-            return { false, expr };
+          case dd4hep::tools::Evaluator::ERROR_UNEXPECTED_SYMBOL:
+            { // unexpected symbol; if it's just a comma, attempt to parse as a list, otherwise complain and return `expr` as is
+              if(expr.find(',') != std::string::npos) {
+                std::string result = "";
+                bool success       = true;
+                if(debug) fmt::print("{:-^30}\n"," begin list ");
+                // tokenize
+                std::istringstream expr_s(expr);
+                std::string tok;
+                while(getline(expr_s, tok, ',')) { // call `dd4hep_to_string` on each list element
+                  auto parsed_tok = dd4hep_to_string(tok);
+                  result += "," + parsed_tok.result;
+                  success &= parsed_tok.success; // innocent until proven guilty
+                }
+                result.erase(0,1); // remove leading comma
+                if(debug) fmt::print("{:-^30}\n-> string: {}\n", " end list ", result);
+                return { success, result };
+              }
+              break;
+            }
         };
+
+        // likely an error; complain and return `expr` as is
+        fmt::print(stderr,"ERROR: cannot evaluate '{}'; ",expr);
+        parsed.print_error();
+        return { false, expr };
       }
 
     private:
-      std::unique_ptr<dd4hep::tools::Evaluator> m_eval;
+      std::unique_ptr<dd4hep::tools::Evaluator::Object> m_eval;
       bool debug;
   };
 }
