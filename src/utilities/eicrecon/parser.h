@@ -25,7 +25,7 @@ namespace jana::parser {
   class Parser {
     public:
 
-      Parser() : debug(false) {
+      Parser(bool debug=false, int min_precision=6) : m_debug(debug), m_min_precision(min_precision) {
 
         //
         // FIXME: decide which unit system to use
@@ -74,7 +74,7 @@ namespace jana::parser {
       // - this is useful for parsing CLI options
       // - optionally specify `key` to clarify debugging printouts
       Result<std::string> dd4hep_to_string(const std::string& expr, const std::string& key="") {
-        if(debug) fmt::print("PARSE: dd4hep_to_string({}){}\n", expr, key==""? "" : " for key "+key);
+        if(m_debug) fmt::print("PARSE: dd4hep_to_string({}){}\n", expr, key==""? "" : " for key "+key);
 
         // handle empty string, which would otherwise cause en error in parsing
         if(expr=="") return { true, expr };
@@ -83,15 +83,21 @@ namespace jana::parser {
         auto parsed = m_eval->evaluate(expr.c_str());
 
         // return a `Result`, with the calculated number re-stringified without any units
-        if(debug) fmt::print("-> status: {}\n", parsed.status());
+        if(m_debug) fmt::print("-> status: {}\n", parsed.status());
         switch(parsed.status()) {
 
           case dd4hep::tools::Evaluator::OK:
             { // likely a number that was parsed successfuly; stringify it
-              std::stringstream ss;  // FIXME: using JParameterManager::Stringify returns "'Stringify' is not member" error
-              ss << parsed.result(); //        instead, copy Stringify's implementation here
+              std::stringstream ss;
+              // increase stringify precision, if the user specified higher than `m_min_precision`
+              auto precision = std::max(
+                  (unsigned long) m_min_precision,
+                  expr.substr(0,expr.find("*")).size() // count `char`s up to first `*`
+                  );
+              // stringify
+              ss << std::setprecision(precision) << parsed.result();
               auto result = ss.str();
-              if(debug) fmt::print("-> evaluator result: {}\n-> string: '{}'\n", parsed.result(), result);
+              if(m_debug) fmt::print("-> evaluator result: {}\n-> string: '{}'\n", parsed.result(), result);
               return { true, result };
             }
 
@@ -99,7 +105,7 @@ namespace jana::parser {
             { // likely a string (as long as it's not any specific unit name); return `expr` as is
               if(expr.find('*') != std::string::npos) // try to detect units typos
                 fmt::print(stderr,"WARNING: parsing '{}' as a string; is there a typo in the units?\n",expr);
-              if(debug) fmt::print("-> string: '{}'\n", expr);
+              if(m_debug) fmt::print("-> string: '{}'\n", expr);
               return { true, expr };
             }
 
@@ -108,7 +114,7 @@ namespace jana::parser {
               if(expr.find(',') != std::string::npos) {
                 std::string result = "";
                 bool success       = true;
-                if(debug) fmt::print("{:-^30}\n"," begin list ");
+                if(m_debug) fmt::print("{:-^30}\n"," begin list ");
                 // tokenize
                 std::istringstream expr_s(expr);
                 std::string tok;
@@ -118,7 +124,7 @@ namespace jana::parser {
                   success &= parsed_tok.success; // innocent until proven guilty
                 }
                 result.erase(0,1); // remove leading comma
-                if(debug) fmt::print("{:-^30}\n-> string: {}\n", " end list ", result);
+                if(m_debug) fmt::print("{:-^30}\n-> string: {}\n", " end list ", result);
                 return { success, result };
               }
               break;
@@ -133,6 +139,7 @@ namespace jana::parser {
 
     private:
       std::unique_ptr<dd4hep::tools::Evaluator::Object> m_eval;
-      bool debug;
+      bool m_debug;
+      int m_min_precision;
   };
 }
