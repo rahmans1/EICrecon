@@ -19,6 +19,7 @@ namespace jana::parser {
 
     // DD4hep default system
     // 1 = centimeter = GeV = second = nanoampere = kelvin = mole = candela = radian = steradian
+    // NOTE: may differ from above depending on how DD4hep is configured, thus we use the `dd4hep::` names here
     m_eval = std::make_unique<dd4hep::tools::Evaluator::Object>(
         dd4hep::meter,
         dd4hep::kilogram,

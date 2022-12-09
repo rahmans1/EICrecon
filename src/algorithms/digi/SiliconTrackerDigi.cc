@@ -3,7 +3,7 @@
 //
 
 #include <spdlog/spdlog.h>
-#include <TGeoSystemOfUnits.h>
+#include <DD4hep/DD4hepUnits.h>
 #include <edm4hep/MCParticle.h>
 #include "SiliconTrackerDigi.h"
 
@@ -14,7 +14,7 @@ void eicrecon::SiliconTrackerDigi::init(std::shared_ptr<spdlog::logger>& logger)
 
     // Create random gauss function
     m_gauss = [&](){
-        return m_random.Gaus(0, m_cfg.timeResolution);
+        return m_random.Gaus(0, m_cfg.timeResolution / dd4hep::ns);
     };
 }
 
@@ -22,7 +22,6 @@ void eicrecon::SiliconTrackerDigi::init(std::shared_ptr<spdlog::logger>& logger)
 std::vector<edm4eic::RawTrackerHit *>
 eicrecon::SiliconTrackerDigi::produce(const std::vector<const edm4hep::SimTrackerHit *>& sim_hits) {
     /** Event by event processing **/
-    namespace units = TGeoUnit;
 
     // A map of unique cellIDs with temporary structure RawHit
     struct RawHit {
@@ -52,8 +51,8 @@ eicrecon::SiliconTrackerDigi::produce(const std::vector<const edm4hep::SimTracke
 
 
         double edep = sim_hit->getEDep();
-        if (edep * units::keV < m_cfg.threshold) {
-            m_log->debug("  edep is below threshold of {:.2f} [keV]", m_cfg.threshold / units::keV);
+        if (edep * dd4hep::keV < m_cfg.threshold) {
+            m_log->debug("  edep is below threshold of {:.2f} [keV]", m_cfg.threshold / dd4hep::keV);
             continue;
         }
 

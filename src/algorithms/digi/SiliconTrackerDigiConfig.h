@@ -1,11 +1,13 @@
 #ifndef EICRECON_SILICONTRACKERDIGICONFIG_H
 #define EICRECON_SILICONTRACKERDIGICONFIG_H
 
+#include <DD4hep/DD4hepUnits.h>
+
 namespace eicrecon {
 
     struct SiliconTrackerDigiConfig {
         double threshold  = 0;
-        double timeResolution = 8;   /// TODO 8 of what units??? Same TODO in juggler. Probably [ns]
+        double timeResolution = 8*dd4hep::ns;
     };
 
 } // eicrecon
