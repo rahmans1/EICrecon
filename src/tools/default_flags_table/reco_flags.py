@@ -148,7 +148,7 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelImagingProtoClusters::minClusterNhits',    '5',                               ''),
 
     ('BEMC:EcalBarrelScFiProtoClusters:input_tag',              'EcalBarrelScFiMergedHits', 'Name of input collection to use'),
-    ('BEMC:EcalBarrelScFiProtoClusters:splitCluster',           '0',                               ''),
+    ('BEMC:EcalBarrelScFiProtoClusters:splitCluster',           'false',                           ''),
     ('BEMC:EcalBarrelScFiProtoClusters:minClusterHitEdep',      '1.0*MeV',                         ''),
     ('BEMC:EcalBarrelScFiProtoClusters:minClusterCenterEdep',   '10.0*MeV',                        ''),
     ('BEMC:EcalBarrelScFiProtoClusters:sectorDist',             '50.0*mm',                          ''),
@@ -169,7 +169,7 @@ eicrecon_reco_flags = [
     ('BEMC:EcalBarrelScFiClusters:input_simhit_tag',            'EcalBarrelScFiHits',              ''),
     ('BEMC:EcalBarrelScFiClusters:energyWeight',                'log',                             ''),
     ('BEMC:EcalBarrelScFiClusters:moduleDimZName',              '',                                ''),
-    ('BEMC:EcalBarrelScFiClusters:enableEtaBounds',             '0',                               ''),
+    ('BEMC:EcalBarrelScFiClusters:enableEtaBounds',             'false',                           ''),
 
     ('BEMC:EcalBarrelImagingMergedClusters:inputMCParticles_tag',     'MCParticles',                          ''),
     ('BEMC:EcalBarrelImagingMergedClusters:energyClusters_tag',       'EcalBarrelScFiClusters',               ''),
@@ -777,84 +777,6 @@ eicrecon_reco_flags = [
     ('Reco:GeneratedParticles:MomentumSmearing',                 '0',                              'Gaussian momentum smearing value'),
 
 ]
-
-##
-## ========================================================================================================================================================
-## System of units used here:
-## ========================================================================================================================================================
-## (Copied from system_of_units.py to remove dependency to copy)
-
-##
-## Energy [E]
-##
-#megaelectronvolt = 1.e-3
-#electronvolt     = 1.e-6*megaelectronvolt
-#kiloelectronvolt = 1.e-3*megaelectronvolt
-#gigaelectronvolt = 1.e+3*megaelectronvolt
-#teraelectronvolt = 1.e+6*megaelectronvolt
-#petaelectronvolt = 1.e+9*megaelectronvolt
-## symbols
-#MeV = megaelectronvolt
-#eV  = electronvolt
-#keV = kiloelectronvolt
-#GeV = gigaelectronvolt
-#TeV = teraelectronvolt
-#PeV = petaelectronvolt
-## Length [L]
-##
-#millimeter  = 0.1
-#millimeter2 = millimeter*millimeter
-#millimeter3 = millimeter*millimeter*millimeter
-#centimeter  = 10.*millimeter
-#centimeter2 = centimeter*centimeter
-#centimeter3 = centimeter*centimeter*centimeter
-#meter  = 1000.*millimeter
-#meter2 = meter*meter
-#meter3 = meter*meter*meter
-#kilometer = 1000.*meter
-#kilometer2 = kilometer*kilometer
-#kilometer3 = kilometer*kilometer*kilometer
-#parsec = 3.0856775807e+16*meter
-#micrometer = 1.e-6 *meter
-#nanometer  = 1.e-9 *meter
-#angstrom   = 1.e-10*meter
-#fermi      = 1.e-15*meter
-#barn       = 1.e-28*meter2
-#millibarn  = 1.e-3 *barn
-#microbarn  = 1.e-6 *barn
-#nanobarn   = 1.e-9 *barn
-#picobarn   = 1.e-12*barn
-## symbols
-#mm  = millimeter
-#mm2 = millimeter2
-#mm3 = millimeter3
-#cm  = centimeter
-#cm2 = centimeter2
-#cm3 = centimeter3
-#m  = meter
-#m2 = meter2
-#m3 = meter3
-#km  = kilometer
-#km2 = kilometer2
-#km3 = kilometer3
-#pc = parsec
-## Time [T]
-##
-#second = 1.
-#millisecond = 1.e-3*second
-#microsecond = 1.e-6*second
-#nanosecond = 1.e-9*second
-#picosecond = 1.e-12*second
-## symbols
-#ms = millisecond
-#us = microsecond
-#ns = nanosecond
-#ps = picosecond
-## Angle [A]
-##
-#radian = 1.
-#mrad = radian/1000.0
-#degree = 0.017453292519943*radian
 
 
 # ========================================================================================================================================================
