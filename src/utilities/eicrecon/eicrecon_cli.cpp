@@ -510,7 +510,7 @@ namespace jana {
                                 auto val_parsed = val_parser.dd4hep_to_string(val,key);
                                 options.params.insert({ key, val_parsed.result });
                                 if (!val_parsed.success)
-                                    std::cerr << "ERROR: cannot parse '" << arg << "' for DD4hep units" << std::endl;
+                                    std::cerr << "ERROR: failed to parse '" << arg << "'" << std::endl;
                             }
                         } else {
                             std::cout << "Invalid JANA parameter '" << arg
