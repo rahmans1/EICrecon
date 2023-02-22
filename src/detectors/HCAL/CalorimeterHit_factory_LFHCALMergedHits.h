@@ -26,8 +26,8 @@ public:
         m_input_tag = "LFHCALRecHits";
 
         m_readout="LFHCALHits";
-        u_fields={"layer", "slice"};  
-        u_refs={1, 0};                
+        u_fields={};  
+        u_refs={};                
 
         m_geoSvc= app->GetService<JDD4hep_service>();
 

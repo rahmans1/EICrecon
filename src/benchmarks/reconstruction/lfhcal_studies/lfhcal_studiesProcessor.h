@@ -27,8 +27,8 @@
 #include <edm4eic/TrackerHit.h>
 #include <edm4eic/CalorimeterHit.h>
 #include <edm4eic/ReconstructedParticle.h>
-#include <edm4eic/TrackSegment.h>
-#include <edm4eic/TrackerHit.h>
+#include <edm4eic/Cluster.h>
+
 #include <services/log/Log_service.h>
 #include <extensions/spdlog/SpdlogMixin.h>
 #include <algorithms/tracking/ActsGeometryProvider.h>
@@ -45,6 +45,7 @@ private:
     PrefetchT<edm4hep::MCParticle>  mcParticles   = {this, "MCParticles" };
     PrefetchT<edm4eic::CalorimeterHit> lfhcalRecHits = {this, "LFHCALRecHits"};
     PrefetchT<edm4hep::SimCalorimeterHit> lfhcalSimHits = {this, "LFHCALHits"};
+    PrefetchT<edm4eic::Cluster> lfhcalClustersF = {this, "LFHCALClusters"};
     
     // Declare histogram and tree pointers here. e.g.
     // TH2D* hEdigi = nullptr ;
@@ -59,6 +60,17 @@ public:
     TH2D* hMCEnergyVsEta;
     TH3D* hClusterEcalib_E_eta;
     TH3D* hClusterESimcalib_E_eta;
+    TH3D* hRecClusterEcalib_E_eta;
+    TH3D* hRecClusterEcalib_Ehigh_eta;
+    TH3D* hRecFClusterEcalib_E_eta;
+    TH3D* hRecFClusterEcalib_Ehigh_eta;
+    TH3D* hClusterNCells_E_eta;
+    TH3D* hClusterSimNCells_E_eta;
+    TH3D* hRecClusterNCells_Ehigh_eta;
+    TH3D* hRecNClusters_E_eta;
+    TH3D* hRecFClusterNCells_Ehigh_eta;
+    TH3D* hRecFNClusters_E_eta;
+    
     TH3D* hClusterEcalib_E_phi;
     TH3D* hClusterESimcalib_E_phi;
     TH2D* hCellESim_layerZ;

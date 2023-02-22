@@ -46,10 +46,12 @@ public:
         m_pedSigmaADC = 0.8;
         m_resolutionTDC = 10 * dd4hep::picosecond;
         m_corrMeanScale = 1.0;
-        u_fields={};
-        u_refs={};
-        m_geoSvcName = "ActsGeometryProvider";
-        m_readout = "";
+//         u_fields={"rlayerz","layerz"};
+//         u_refs={1, 0};
+        u_fields={"layerz"};
+        u_refs={0};
+        m_geoSvcName = "geoServiceName";
+        m_readout = "LFHCALHits";
         m_geoSvc = app->GetService<JDD4hep_service>(); // TODO: implement named geometry service?
 
         // This is another option for exposing the data members as JANA configuration parameters.

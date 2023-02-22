@@ -25,6 +25,7 @@
 
 #include "TCanvas.h"
 #include "TChain.h"
+#include "TVector3.h"
 
 #include "Acts/Geometry/TrackingGeometry.hpp"
 #include "Acts/Geometry/TrackingVolume.hpp"
@@ -41,14 +42,184 @@ void InitPlugin(JApplication* app) {
 }
 
 struct towersStrct{
-  towersStrct(): energy(0), cellIDx(-1), cellIDy(-1), cellIDz(-1), tower_trueID(-10000) {}
+  towersStrct(): energy(0), time (0), posx(0), posy(0), posz(0),  cellID(0), cellIDx(-1), cellIDy(-1), cellIDz(-1), tower_trueID(-10000) {}
   float energy;
+  float time;
+  float posx;
+  float posy;
+  float posz;
+  int cellID;
   int cellIDx;
   int cellIDy;
   int cellIDz;
   int tower_trueID;
 } ;
+
 bool acompare(towersStrct lhs, towersStrct rhs) { return lhs.energy > rhs.energy; }
+
+struct clustersStrct{
+  clustersStrct(): cluster_E(0.), cluster_seed(0.), cluster_Eta(-10.), cluster_Phi(-10.), cluster_X(0.) , cluster_Y(0.), cluster_Z(0.), cluster_M02(0.), cluster_M20(0.), cluster_NTowers(0), cluster_trueID(-10000), cluster_NtrueID(0) {}
+  float cluster_E;
+  float cluster_seed;
+  float cluster_Eta;
+  float cluster_Phi;
+  float cluster_X;
+  float cluster_Y;
+  float cluster_Z;
+  float cluster_M02;
+  float cluster_M20;
+  int cluster_NTowers;
+  int cluster_trueID;
+  int cluster_NtrueID;
+  std::vector<towersStrct> cluster_towers;
+} ;
+
+bool acompareCl(clustersStrct lhs, clustersStrct rhs) { return lhs.cluster_E > rhs.cluster_E; }
+
+//**************************************************************************************************************
+//**************************************************************************************************************
+// find clusters with common edges or corners, separate if energy increases in neighboring cell
+//**************************************************************************************************************
+//**************************************************************************************************************
+clustersStrct findMACluster(
+                              float seed,                                     // minimum seed energy
+                              float agg,                                      // minimum aggregation energy
+//                               float aggMargin,                                // aggregation margin
+                              std::vector<towersStrct> &input_towers_temp,    // temporary full tower array
+                              std::vector<towersStrct> &cluster_towers_temp  // towers associated to cluster
+//                               std::vector<int> clslabels_temp                 // MC labels in cluster
+                            ){
+  clustersStrct tempstructC;
+  if(input_towers_temp.at(0).energy > seed){
+//     std::cout << "new cluster" << std::endl;
+    // fill seed cell information into current cluster
+    tempstructC.cluster_E       = input_towers_temp.at(0).energy;
+    tempstructC.cluster_seed    = input_towers_temp.at(0).energy;
+    tempstructC.cluster_NTowers = 1;
+    tempstructC.cluster_NtrueID = 1;
+    tempstructC.cluster_trueID = input_towers_temp.at(0).tower_trueID; // TODO save all MC labels?
+    cluster_towers_temp.push_back(input_towers_temp.at(0));
+//     clslabels_temp.push_back(input_towers_temp.at(0).tower_trueID);
+//     std::cout  << "seed: "<<  input_towers_temp.at(0).cellIDx << "\t" << input_towers_temp.at(0).cellIDy 
+//                   << "\t" << input_towers_temp.at(0).cellIDz << "\t E:"<< tempstructC.cluster_E << std::endl;
+    
+    
+    // remove seed tower from sample
+    input_towers_temp.erase(input_towers_temp.begin());
+    for (int tit = 0; tit < (int)cluster_towers_temp.size(); tit++){
+      // Now go recursively to all neighbours and add them to the cluster if they fulfill the conditions
+      int iEtaTwr = cluster_towers_temp.at(tit).cellIDx;
+      int iPhiTwr = cluster_towers_temp.at(tit).cellIDy;
+      int iLTwr   = cluster_towers_temp.at(tit).cellIDz;
+      int refC = 0;
+      for (int ait = 0; ait < (int)input_towers_temp.size(); ait++){
+        int iEtaTwrAgg = input_towers_temp.at(ait).cellIDx;
+        int iPhiTwrAgg = input_towers_temp.at(ait).cellIDy;
+        int iLTwrAgg   = input_towers_temp.at(ait).cellIDz;
+                
+        int deltaL    = TMath::Abs(iLTwrAgg-iLTwr) ;
+        int deltaPhi  = TMath::Abs(iPhiTwrAgg-iPhiTwr) ;
+        int deltaEta  = TMath::Abs(iEtaTwrAgg-iEtaTwr) ;
+        bool neighbor = (deltaL+deltaPhi+deltaEta == 1);
+        bool corner2D = (deltaL == 0 && deltaPhi == 1 && deltaEta == 1) || (deltaL == 1 && deltaPhi == 0 && deltaEta == 1) || (deltaL == 1 && deltaPhi == 1 && deltaEta == 0);          
+//         first condition asks for V3-like neighbors, while second condition also checks diagonally attached towers
+        if(neighbor || corner2D ){
+
+          // only aggregate towers with lower energy than current tower
+          
+//           if(input_towers_temp.at(ait).energy >= (cluster_towers_temp.at(tit).energy + aggMargin)) continue;
+          tempstructC.cluster_E+=input_towers_temp.at(ait).energy;
+          tempstructC.cluster_NTowers++;
+          cluster_towers_temp.push_back(input_towers_temp.at(ait));
+//           if(!(std::find(clslabels_temp.begin(), clslabels_temp.end(), input_towers_temp.at(ait).tower_trueID) != clslabels_temp.end())){
+//             tempstructC.cluster_NtrueID++;
+//             clslabels_temp.push_back(input_towers_temp.at(ait).tower_trueID);
+//           }
+//           std::cout << "aggregated: "<< iEtaTwrAgg << "\t" << iPhiTwrAgg << "\t" << iLTwrAgg << "\t E:" << input_towers_temp.at(ait).energy << "\t reference: "<< refC << "\t"<< iEtaTwr << "\t" << iPhiTwr << "\t" << iLTwr << "\t cond.: \t"<< neighbor << "\t" << corner2D << "\t  diffs: " << deltaEta << "\t" << deltaPhi << "\t" << deltaL<< std::endl;
+
+          input_towers_temp.erase(input_towers_temp.begin()+ait);
+          ait--;
+          refC++;
+        }
+      }
+    }
+  } 
+  return tempstructC;
+}
+
+
+// ANCHOR function to determine shower shape
+float * CalculateM02andWeightedPosition(std::vector<towersStrct> cluster_towers, float cluster_E_calc, float weight0){
+    static float returnVariables[8]; //0:M02, 1:M20, 2:eta, 3: phi
+    float w_tot = 0;
+    std::vector<float> w_i;
+    TVector3 vecTwr;
+    TVector3 vecTwrTmp;
+    float zHC     = 1;
+    float w_0     = weight0;
+    
+    vecTwr = {0.,0.,0.};
+    //calculation of weights and weighted position vector
+    int Nweighted = 0;
+    for(int cellI=0; cellI<(int)cluster_towers.size(); cellI++){
+        w_i.push_back(TMath::Max( (float)0, (float) (w_0 + TMath::Log(cluster_towers.at(cellI).energy/cluster_E_calc) )));
+        w_tot += w_i.at(cellI);
+        if(w_i.at(cellI)>0){
+          Nweighted++;
+          vecTwrTmp = TVector3(cluster_towers.at(cellI).posx, cluster_towers.at(cellI).posy, cluster_towers.at(cellI).posz );
+          vecTwr += w_i.at(cellI)*vecTwrTmp;
+        }
+    }
+    // correct Eta position for average shift in calo 
+    returnVariables[2]= vecTwr.Eta();
+    returnVariables[3]= vecTwr.Phi(); //(vecTwr.Phi()<0 ? vecTwr.Phi()+TMath::Pi() : vecTwr.Phi()-TMath::Pi());
+    vecTwr*=1./w_tot;
+//     std::cout << "Cluster: X: "<< vecTwr.X() << "\t" << " Y: "<< vecTwr.Y() << "\t" << " Z: "<< vecTwr.Z() << std::endl;
+    returnVariables[4]=vecTwr.X();
+    returnVariables[5]=vecTwr.Y();
+    returnVariables[6]=vecTwr.Z();
+
+    //calculation of M02
+    float delta_phi_phi[4] = {0};
+    float delta_eta_eta[4] = {0};
+    float delta_eta_phi[4] = {0};
+    float dispersion = 0;
+    
+    for(int cellI=0; cellI<(int)cluster_towers.size(); cellI++){
+      int iphi=cluster_towers.at(cellI).cellIDy;
+      int ieta=cluster_towers.at(cellI).cellIDx;
+      delta_phi_phi[1] += (w_i.at(cellI)*iphi*iphi)/w_tot;
+      delta_phi_phi[2] += (w_i.at(cellI)*iphi)/w_tot;
+      delta_phi_phi[3] += (w_i.at(cellI)*iphi)/w_tot;
+
+      delta_eta_eta[1] += (w_i.at(cellI)*ieta*ieta)/w_tot;
+      delta_eta_eta[2] += (w_i.at(cellI)*ieta)/w_tot;
+      delta_eta_eta[3] += (w_i.at(cellI)*ieta)/w_tot;
+
+      delta_eta_phi[1] += (w_i.at(cellI)*ieta*iphi)/w_tot;
+      delta_eta_phi[2] += (w_i.at(cellI)*iphi)/w_tot;
+      delta_eta_phi[3] += (w_i.at(cellI)*ieta)/w_tot;
+
+      vecTwrTmp = TVector3(cluster_towers.at(cellI).posx, cluster_towers.at(cellI).posy, cluster_towers.at(cellI).posz );
+      // scale cluster position to z-plane
+      vecTwr*=abs(vecTwrTmp.Z()/vecTwr.Z());
+      float dx2 = pow(vecTwrTmp.X()-vecTwr.X(),2);
+      float dy2 = pow(vecTwrTmp.Y()-vecTwr.Y(),2);
+      float dz2 = pow(vecTwrTmp.Z()-vecTwr.Z(),2);
+      dispersion+= (w_i.at(cellI)*(dx2+dy2+dz2))/w_tot;
+    }
+    returnVariables[7]=dispersion;
+    delta_phi_phi[0] = delta_phi_phi[1] - (delta_phi_phi[2] * delta_phi_phi[3]);
+    delta_eta_eta[0] = delta_eta_eta[1] - (delta_eta_eta[2] * delta_eta_eta[3]);
+    delta_eta_phi[0] = delta_eta_phi[1] - (delta_eta_phi[2] * delta_eta_phi[3]);
+
+    float calcM02 = 0.5 * ( delta_phi_phi[0] + delta_eta_eta[0] ) + TMath::Sqrt( 0.25 * TMath::Power( ( delta_phi_phi[0] - delta_eta_eta[0] ), 2 ) + TMath::Power( delta_eta_phi[0], 2 ) );
+    float calcM20 = 0.5 * ( delta_phi_phi[0] + delta_eta_eta[0] ) - TMath::Sqrt( 0.25 * TMath::Power( ( delta_phi_phi[0] - delta_eta_eta[0] ), 2 ) + TMath::Power( delta_eta_phi[0], 2 ) );
+//     std::cout << "M02_calc: " << calcM02 << "\t\t = 0.5 * ( " << delta_phi_phi[0] <<" + "<<delta_eta_eta[0]<<" ) + TMath::Sqrt( 0.25 * TMath::Power( ( "<<delta_phi_phi[0]<<" - "<<delta_eta_eta[0]<<" ), 2 ) + TMath::Power( "<<delta_eta_phi[0]<<", 2 ) ) "<< std::endl;
+    returnVariables[0]=calcM02;
+    returnVariables[1]=calcM20;
+    return returnVariables;
+}
 
 //-------------------------------------------
 // InitWithGlobalRootLock
@@ -84,14 +255,47 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
 
   hMCEnergyVsEta = new TH2D("hMCEnergyVsEta", "; E (GeV); #eta", 1500, 0., 150., 400, 1., 5.);
   hMCEnergyVsEta->SetDirectory(m_dir_main);
+
+  // Sum cell clusters rec
   hClusterEcalib_E_eta = new TH3D("hClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
   hClusterEcalib_E_eta->SetDirectory(m_dir_main);
+  hClusterNCells_E_eta = new TH3D("hClusterNCells_E_eta", "; E_{MC} (GeV); N_{cells}; #eta",  1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hClusterNCells_E_eta->SetDirectory(m_dir_main);
+  // Sum cell clusters sim
   hClusterESimcalib_E_eta = new TH3D("hClusterESimcalib_E_eta", "; E_{MC} (GeV); E_{rec,sim hit}/E_{MC}; #eta" , 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
   hClusterESimcalib_E_eta->SetDirectory(m_dir_main);
-  hClusterEcalib_E_phi = new TH3D("hClusterEcalib_E_phi", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #varphi (rad)", 1500, 0., 150.0, 200, 0., 2.0, 360 , 0, 2*TMath::Pi());
+  hClusterSimNCells_E_eta = new TH3D("hClusterSimNCells_E_eta", "; E_{MC} (GeV); N_{cells, sim}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hClusterSimNCells_E_eta->SetDirectory(m_dir_main);
+  // rec cluster
+  hRecClusterEcalib_E_eta = new TH3D("hRecClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,rec clus}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hRecClusterEcalib_E_eta->SetDirectory(m_dir_main);
+  // rec cluster highest 
+  hRecClusterEcalib_Ehigh_eta = new TH3D("hRecClusterEcalib_Ehigh_eta", "; E_{MC} (GeV); E_{rec,rec clus high.}/E_{MC}; #eta", 
+                                         1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hRecClusterEcalib_Ehigh_eta->SetDirectory(m_dir_main);
+  hRecClusterNCells_Ehigh_eta = new TH3D("hRecClusterNCells_Ehigh_eta", "; E_{MC} (GeV); N_{cells, rec cl., high.}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hRecClusterNCells_Ehigh_eta->SetDirectory(m_dir_main);
+  hRecNClusters_E_eta = new TH3D("hRecNClusters_E_eta", "; E_{MC} (GeV); N_{rec cl.}; #eta",  1500, 0., 150.0, 10, -0.5, 9.5, 20, 1, 5);
+  hRecNClusters_E_eta->SetDirectory(m_dir_main);
+  // rec cluster framework
+  hRecFClusterEcalib_E_eta = new TH3D("hRecFClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,fram clus}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hRecFClusterEcalib_E_eta->SetDirectory(m_dir_main);
+  // rec cluster framework highest 
+  hRecFClusterEcalib_Ehigh_eta = new TH3D("hRecFClusterEcalib_Ehigh_eta", "; E_{MC} (GeV); E_{rec,fram clus high.}/E_{MC}; #eta", 
+                                          1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hRecFClusterEcalib_Ehigh_eta->SetDirectory(m_dir_main);
+  hRecFClusterNCells_Ehigh_eta = new TH3D("hRecFClusterNCells_Ehigh_eta", "; E_{MC} (GeV); N_{cells, rec f. cl., high.}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hRecFClusterNCells_Ehigh_eta->SetDirectory(m_dir_main);
+  hRecFNClusters_E_eta = new TH3D("hRecFNClusters_E_eta", "; E_{MC} (GeV); N_{rec f. cl.}; #eta",  1500, 0., 150.0, 10, -0.5, 9.5, 20, 1, 5);
+  hRecFNClusters_E_eta->SetDirectory(m_dir_main);
+
+  hClusterEcalib_E_phi = new TH3D("hClusterEcalib_E_phi", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #varphi (rad)", 
+                                  1500, 0., 150.0, 200, 0., 2.0, 360 , 0, 2*TMath::Pi());
   hClusterEcalib_E_phi->SetDirectory(m_dir_main);
   hClusterESimcalib_E_phi = new TH3D("hClusterESimcalib_E_phi", "; E_{MC} (GeV); E_{rec,sim hit}/E_{MC}; #varphi (rad)" , 1500, 0., 150.0, 200, 0., 2.0, 360 , 0, 2*TMath::Pi());
   hClusterESimcalib_E_phi->SetDirectory(m_dir_main);
+
+
   hCellESim_layerZ = new TH2D("hCellESim_layerZ", "; #cell ID Z; E_{rec,sim hit} (GeV)" , 70, -0.5, 69.5, 5000, 0, 1);
   hCellESim_layerZ->SetDirectory(m_dir_main);
   hCellESim_layerX = new TH2D("hCellESim_layerX", "; #cell ID X; E_{rec,sim hit} (GeV)" , 240, -0.5, 239.5, 5000, 0, 1);
@@ -155,6 +359,9 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   std::cout << "layery index is " << layer_index_y << std::endl;
   auto layer_index_z = m_decoder->index("layerz");
   std::cout << "layerz index is " << layer_index_z << std::endl;
+  auto rlayer_index_z = m_decoder->index("rlayerz");
+  std::cout << "readout layerz index is " << rlayer_index_z << std::endl;
+  std::cout << "full list: " << " " << m_decoder->fieldDescription() << std::endl;
 }
 
 //-------------------------------------------
@@ -207,10 +414,11 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     
     auto detector_module_x  = m_decoder->get(cellID, 1);
     auto detector_module_y  = m_decoder->get(cellID, 2);
-    auto detector_layer_x = m_decoder->get(cellID, 4);
-    auto detector_layer_y = m_decoder->get(cellID, 5);
-    auto detector_layer_z = m_decoder->get(cellID, 6);
-    auto detector_passive = m_decoder->get(cellID, 7);
+    auto detector_passive = m_decoder->get(cellID, 4);
+    auto detector_layer_x = m_decoder->get(cellID, 5);
+    auto detector_layer_y = m_decoder->get(cellID, 6);
+    auto detector_layer_rz = m_decoder->get(cellID, 7);
+    auto detector_layer_z = m_decoder->get(cellID, 8);
     if(detector_passive == 0) {
       sumActiveCaloEnergy += energy;
     } else {
@@ -221,22 +429,22 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     // calc cell IDs
     int cellIDx = 54*2 - detector_module_x * 2 + detector_layer_x;
     int cellIDy = 54*2 - detector_module_y * 2 + detector_layer_y;
-    int cellIDz = detector_layer_z;
+    int cellIDz = detector_layer_rz*10+detector_layer_z;
     nCaloHitsSim++;
     
     hPosCaloSimHitsXY->Fill(x, y);
     hPosCaloSimHitsZX->Fill(z, x);
     hPosCaloSimHitsZY->Fill(z, y);
 
-    hCellESim_layerZ->Fill(detector_layer_z, energy);
+    hCellESim_layerZ->Fill(cellIDz, energy);
     hCellESim_layerX->Fill(cellIDx, energy);
     hCellESim_layerY->Fill(cellIDy, energy);
-    hCellTSim_layerZ->Fill(detector_layer_z, time);
+    hCellTSim_layerZ->Fill(cellIDz, time);
     
     //loop over input_tower_sim and find if there is already a tower with the same cellID
     bool found = false;
     for (auto& tower : input_tower_sim) {
-      if ((tower.cellIDx == cellIDx) && (tower.cellIDy == cellIDy) && (tower.cellIDz == cellIDz)) {
+      if (tower.cellID == cellID) {
         tower.energy += energy;
         found = true;
         break;
@@ -244,14 +452,18 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     }
     if (!found) {
       towersStrct tempstructT;
-      tempstructT.energy       = energy; 
-      tempstructT.cellIDx    = cellIDx;
-      tempstructT.cellIDy    = cellIDy;
-      tempstructT.cellIDz      = cellIDz;
+      tempstructT.energy        = energy;
+      tempstructT.time          = time; 
+      tempstructT.posx          = x; 
+      tempstructT.posy          = y; 
+      tempstructT.posz          = z; 
+      tempstructT.cellID        = cellID;
+      tempstructT.cellIDx       = cellIDx;
+      tempstructT.cellIDy       = cellIDy;
+      tempstructT.cellIDz       = cellIDz;
       tempstructT.tower_trueID  = 0; //TODO how to get trueID?
       input_tower_sim.push_back(tempstructT);
     }
-    
   }
 
   int nCaloHitsRec = 0;
@@ -263,22 +475,24 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     float z         = caloHit->getPosition().z / 10.;
     uint64_t cellID = caloHit->getCellID();
     float energy    = caloHit->getEnergy();
+    float time      = caloHit->getTime();
 //     cout << "Calo hit: " << x << " " << y << " " << z << "\tcellID: " << cellID
 //          << "\tenergy: " << energy << endl;
 
     auto detector_module_x  = m_decoder->get(cellID, 1);
     auto detector_module_y  = m_decoder->get(cellID, 2);
     auto detector_module_t  = m_decoder->get(cellID, 3);
-    auto detector_layer_x = m_decoder->get(cellID, 4);
-    auto detector_layer_y = m_decoder->get(cellID, 5);
-    auto detector_layer_z = m_decoder->get(cellID, 6);
-    auto detector_passive = m_decoder->get(cellID, 7);
+    auto detector_passive = m_decoder->get(cellID, 4);
+    auto detector_layer_x = m_decoder->get(cellID, 5);
+    auto detector_layer_y = m_decoder->get(cellID, 6);
+    auto detector_layer_rz = m_decoder->get(cellID, 7);
+    auto detector_layer_z = m_decoder->get(cellID, 8);
     if (detector_passive == 1) continue;
     
     // calc cell IDs
     int cellIDx = 54*2 - detector_module_x * 2 + detector_layer_x;
     int cellIDy = 54*2 - detector_module_y * 2 + detector_layer_y;
-    int cellIDz = detector_layer_z;
+    int cellIDz = detector_layer_rz*10+detector_layer_z;
     hCaloCellIDs->Fill(cellIDz,cellIDx, cellIDy);
     hCaloCellIDs_xy->Fill(cellIDx, cellIDy);
      
@@ -299,7 +513,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     //loop over input_tower_rec and find if there is already a tower with the same cellID
     bool found = false;
     for (auto& tower : input_tower_rec) {
-      if ((tower.cellIDx == cellIDx) && (tower.cellIDy == cellIDy) && (tower.cellIDz == cellIDz)) {
+      if (tower.cellID == cellID) {
         tower.energy += energy;
         found = true;
         break;
@@ -307,14 +521,18 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     }
     if (!found) {
       towersStrct tempstructT;
-      tempstructT.energy       = energy; 
-      tempstructT.cellIDx    = cellIDx;
-      tempstructT.cellIDy    = cellIDy;
-      tempstructT.cellIDz      = cellIDz;
+      tempstructT.energy        = energy; 
+      tempstructT.time          = time; 
+      tempstructT.posx          = x; 
+      tempstructT.posy          = y; 
+      tempstructT.posz          = z; 
+      tempstructT.cellID        = cellID;
+      tempstructT.cellIDx       = cellIDx;
+      tempstructT.cellIDy       = cellIDy;
+      tempstructT.cellIDz       = detector_layer_rz;
       tempstructT.tower_trueID  = 0; //TODO how to get trueID?
       input_tower_rec.push_back(tempstructT);
     }
-    
   }
 //   cout << "nCaloHits sim " << nCaloHitsSim << "\t rec " << nCaloHitsRec << endl;
   if (nCaloHitsRec > 0) nEventsWithCaloHits++;
@@ -343,10 +561,97 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
   }
 //   std::cout << "Mc E: " << mcenergy << "\t eta: " << mceta << "\t sim E rec: " << tot_energySimHit << "\t rec E rec: " <<  tot_energyRecHit << std::endl;
   
+  hClusterNCells_E_eta->Fill(mcenergy, nCaloHitsRec, mceta); 
+  hClusterSimNCells_E_eta->Fill(mcenergy, nCaloHitsSim, mceta); 
+  
   hClusterEcalib_E_eta->Fill(mcenergy, tot_energyRecHit/mcenergy, mceta); 
   hClusterESimcalib_E_eta->Fill(mcenergy, tot_energySimHit/mcenergy, mceta);   
   hClusterEcalib_E_phi->Fill(mcenergy, tot_energyRecHit/mcenergy, mcphi); 
   hClusterESimcalib_E_phi->Fill(mcenergy, tot_energySimHit/mcenergy, mcphi);   
+  
+  
+  // MA clusterization
+  int removedCells  = 0;
+  float minAggE     = 0.001;
+  float seedE       = 0.100;
+  
+  if (input_tower_rec.size()> 0){
+    // clean up rec array for clusterization
+    while (input_tower_rec.at(input_tower_rec.size()-1).energy < minAggE ){
+      input_tower_rec.pop_back();
+      removedCells++;
+    }
+//     std::cout << "removed " << removedCells << " with E < "  << minAggE << "GeV" << std::endl;
+    
+    
+    int nclusters = 0;
+    // vector of clusters
+    std::vector<clustersStrct> clusters_calo;
+    // vector of towers within the currently found cluster
+    std::vector<towersStrct> cluster_towers;
+    while (!input_tower_rec.empty() ) {
+      cluster_towers.clear();
+      clustersStrct tempstructC;
+      // always start with highest energetic tower
+      if(input_tower_rec.at(0).energy > seedE){
+//         std::cout<< "seed: " << input_tower_rec.at(0).energy << "\t" << input_tower_rec.at(0).cellIDx <<  "\t" << input_tower_rec.at(0).cellIDy<<  "\t" << input_tower_rec.at(0).cellIDz<< std::endl;
+        tempstructC = findMACluster(seedE, 0.002, input_tower_rec, cluster_towers);
+
+        // determine remaining cluster properties from its towers
+        float* showershape_eta_phi = CalculateM02andWeightedPosition(cluster_towers, tempstructC.cluster_E, 4.5);
+        tempstructC.cluster_M02 = showershape_eta_phi[0];
+        tempstructC.cluster_M20 = showershape_eta_phi[1];
+        tempstructC.cluster_Eta = showershape_eta_phi[2];
+        tempstructC.cluster_Phi = showershape_eta_phi[3];
+        tempstructC.cluster_X = showershape_eta_phi[4];
+        tempstructC.cluster_Y = showershape_eta_phi[5];
+        tempstructC.cluster_Z = showershape_eta_phi[6];
+//         std::cout <<  "---------> \t " << nclusters << "\tcluster with E = " << tempstructC.cluster_E << "\tEta: " << tempstructC.cluster_Eta<< "\tPhi: " << tempstructC.cluster_Phi
+//                                 << "\tX: " << tempstructC.cluster_X<< "\tY: " << tempstructC.cluster_Y<< "\tZ: " << tempstructC.cluster_Z<< "\tntowers: " << tempstructC.cluster_NTowers 
+//                                 << "\ttrueID: " << tempstructC.cluster_trueID << std::endl;      
+        clusters_calo.push_back(tempstructC);
+        
+        nclusters++;
+      } else {
+//         std::cout<< "remaining: "<< (int)input_tower_rec.size() << " largest:" << input_tower_rec.at(0).energy << "\t" << input_tower_rec.at(0).cellIDx <<  "\t" << input_tower_rec.at(0).cellIDy<<  "\t" << input_tower_rec.at(0).cellIDz<< std::endl;
+//         for (int ait = 0; ait < (int)input_tower_rec.size(); ait++){
+//           std::cout<< input_tower_rec.at(ait).energy << "\t" << input_tower_rec.at(ait).cellIDx <<  "\t" << input_tower_rec.at(ait).cellIDy <<   "\t" << input_tower_rec.at(0).cellIDz << std::endl;
+  //         h_clusterizer_nonagg_towers[caloEnum][clusterizerEnum]->Fill(input_tower_rec.size(),input_tower_rec.at(ait).tower_E);
+//         }
+        input_tower_rec.clear();      
+      }
+    }
+      
+    std::sort(clusters_calo.begin(), clusters_calo.end(), &acompareCl);    
+//     std::cout << "-----> found " << clusters_calo.size() << " clusters" << std::endl; 
+    hRecNClusters_E_eta->Fill(mcenergy, clusters_calo.size(), mceta);  
+    int iCl = 0;
+    for (auto& cluster : clusters_calo) {
+      hRecClusterEcalib_E_eta->Fill(mcenergy, cluster.cluster_E/mcenergy, mceta);  
+      if (iCl == 0){
+        hRecClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster.cluster_E/mcenergy, mceta);  
+        hRecClusterNCells_Ehigh_eta->Fill(mcenergy, cluster.cluster_NTowers, mceta);  
+      }
+      iCl++;
+//       std::cout << cluster.cluster_E << "\t"<< cluster.cluster_NTowers <<std::endl;
+    }
+    
+    clusters_calo.clear();
+  } else {
+    hRecNClusters_E_eta->Fill(mcenergy, 0., mceta);  
+  }
+  
+  int iClF = 0;
+  
+  for (auto& cluster : lfhcalClustersF()) {
+      hRecFClusterEcalib_E_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
+      if (iClF == 0){
+        hRecFClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
+        hRecFClusterNCells_Ehigh_eta->Fill(mcenergy, cluster->getNhits(), mceta);  
+      }
+      iClF++;
+  }
+  hRecFNClusters_E_eta->Fill(mcenergy, iClF, mceta);  
 }
 
 //-------------------------------------------

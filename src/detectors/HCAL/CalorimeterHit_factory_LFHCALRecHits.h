@@ -38,7 +38,13 @@ public:
 
         // energy correction with sampling fraction
         m_sampFrac=0.033;//{this, "samplingFraction", 1.0};
-
+        m_sampFracLayer[0]=0.019;
+        m_sampFracLayer[1]=0.037;
+        m_sampFracLayer[2]=0.037;
+        m_sampFracLayer[3]=0.037;
+        m_sampFracLayer[4]=0.037;
+        m_sampFracLayer[5]=0.037;
+        m_sampFracLayer[6]=0.037;
         // geometry service to get ids, ignored if no names provided
         m_geoSvcName="geoServiceName";
         m_readout="LFHCALHits";       

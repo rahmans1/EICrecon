@@ -27,11 +27,11 @@ public:
     // Init
     void Init() override{
         auto app = GetApplication();
-        m_input_tag = "LFHCALMergedHits";
+        m_input_tag = "LFHCALRecHits";
 
         m_splitCluster=true;              // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
-        m_minClusterHitEdep=0.0 * dd4hep::MeV;    // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
-        m_minClusterCenterEdep=30.0 * dd4hep::MeV; // from ATHENA's reconstruction.py
+        m_minClusterHitEdep=1 * dd4hep::MeV;    // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
+        m_minClusterCenterEdep=190.0 * dd4hep::MeV; // from ATHENA's reconstruction.py
 
         // neighbour checking distances
         m_sectorDist=5.0 * dd4hep::cm;             // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
