@@ -42,7 +42,7 @@ void InitPlugin(JApplication* app) {
 }
 
 struct towersStrct{
-  towersStrct(): energy(0), time (0), posx(0), posy(0), posz(0),  cellID(0), cellIDx(-1), cellIDy(-1), cellIDz(-1), tower_trueID(-10000) {}
+  towersStrct(): energy(0), time (0), posx(0), posy(0), posz(0),  cellID(0), cellIDx(-1), cellIDy(-1), cellIDz(-1), tower_trueID(-10000), tower_clusterIDA(-1), tower_clusterIDB(-1) {}
   float energy;
   float time;
   float posx;
@@ -53,6 +53,8 @@ struct towersStrct{
   int cellIDy;
   int cellIDz;
   int tower_trueID;
+  int tower_clusterIDA;
+  int tower_clusterIDB;
 } ;
 
 bool acompare(towersStrct lhs, towersStrct rhs) { return lhs.energy > rhs.energy; }
@@ -232,7 +234,7 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   auto app          = GetApplication();
   auto acts_service = GetApplication()->GetService<ACTSGeo_service>();
 
-  std::string log_level_str = "debug";
+  std::string log_level_str = "info";
   m_log                     = app->GetService<Log_service>()->logger(plugin_name);
   app->SetDefaultParameter(plugin_name + ":LogLevel", log_level_str,
                            "LogLevel: trace, debug, info, warn, err, critical, off");
@@ -311,10 +313,14 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   hPosCaloModulesXY = new TH2D("hPosCaloModulesXY", "; module ID X; module ID Y", 54, 0., 54., 54, 0., 54.);
   hPosCaloModulesXY->SetDirectory(m_dir_main);
 
-  hCaloCellIDs = new TH3D("hCaloCellIDs", "; id Z; id x; id x", 70, 0, 70, 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+  hCaloCellIDs = new TH3D("hCaloCellIDs", "; id Z; id x; id y", 7, -0.5, 6.5, 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+  hCaloCellIDs->Sumw2();
   hCaloCellIDs->SetDirectory(m_dir_main);
-  hCaloCellIDs_xy = new TH2D("hCaloCellIDs_xy", "; id x; id x", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+  hCaloCellIDs_xy = new TH2D("hCaloCellIDs_xy", "; id x; id y", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
   hCaloCellIDs_xy->SetDirectory(m_dir_main);
+  hCaloCellIDsHCluster = new TH3D("hCaloCellIDsHighestCluster", "; id Z; id x; id y", 7, -0.5, 6.5, 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+  hCaloCellIDsHCluster->Sumw2();
+  hCaloCellIDsHCluster->SetDirectory(m_dir_main);
   
   hPosCaloHitsXY = new TH2D("hPosCaloHitsXY", "; X (cm); Y (cm)", 400, -400., 400., 400, -400., 400.);
   hPosCaloHitsZX = new TH2D("hPosCaloHitsZX", "; Z (cm); X (cm)", 200, 300., 500., 400, -400., 400.);
@@ -338,6 +344,29 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   hCaloCellIDs_xy4M->SetDirectory(m_dir_main);  
   hPosCaloHitsXY4M->SetDirectory(m_dir_main);
   
+  lFHCal_towers_cellE = new float[maxNTowers];
+  lFHCal_towers_cellT = new float[maxNTowers];
+  lFHCal_towers_cellIDx = new short[maxNTowers];
+  lFHCal_towers_cellIDy = new short[maxNTowers];
+  lFHCal_towers_cellIDz = new short[maxNTowers];
+  lFHCal_towers_clusterIDA = new short[maxNTowers];
+  lFHCal_towers_clusterIDB = new short[maxNTowers];
+  lFHCal_towers_cellTrueID = new int[maxNTowers];
+  
+  event_tree = new TTree("event_tree", "event_tree");
+  event_tree->SetDirectory(m_dir_main);
+  
+    // towers LFHCALO
+  event_tree->Branch("tower_LFHCAL_N", &lFHCal_towers_N, "tower_LFHCAL_N/I");
+  event_tree->Branch("tower_LFHCAL_E", lFHCal_towers_cellE, "tower_LFHCAL_E[tower_LFHCAL_N]/F");
+  event_tree->Branch("tower_LFHCAL_T", lFHCal_towers_cellT, "tower_LFHCAL_T[tower_LFHCAL_N]/F");
+  event_tree->Branch("tower_LFHCAL_ix", lFHCal_towers_cellIDx, "tower_LFHCAL_ix[tower_LFHCAL_N]/S");
+  event_tree->Branch("tower_LFHCAL_iy", lFHCal_towers_cellIDy, "tower_LFHCAL_iy[tower_LFHCAL_N]/S");
+  event_tree->Branch("tower_LFHCAL_iz", lFHCal_towers_cellIDz, "tower_LFHCAL_iz[tower_LFHCAL_N]/S");
+  event_tree->Branch("tower_LFHCAL_clusIDA", lFHCal_towers_clusterIDA, "tower_LFHCAL_clusIDA[tower_LFHCAL_N]/S");
+  event_tree->Branch("tower_LFHCAL_clusIDB", lFHCal_towers_clusterIDB, "tower_LFHCAL_clusIDB[tower_LFHCAL_N]/S");
+  event_tree->Branch("tower_LFHCAL_trueID", lFHCal_towers_cellTrueID, "tower_LFHCAL_trueID[tower_LFHCAL_N]/I");
+
   
   std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
   dd4hep::Detector& detector = dd4hep::Detector::getInstance();
@@ -468,6 +497,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
 
   int nCaloHitsRec = 0;
   std::vector<towersStrct> input_tower_rec;
+  std::vector<towersStrct> input_tower_recSav;
   // process rec hits
   for (auto caloHit : lfhcalRecHits()) {
     float x         = caloHit->getPosition().x / 10.;
@@ -493,7 +523,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     int cellIDx = 54*2 - detector_module_x * 2 + detector_layer_x;
     int cellIDy = 54*2 - detector_module_y * 2 + detector_layer_y;
     int cellIDz = detector_layer_rz*10+detector_layer_z;
-    hCaloCellIDs->Fill(cellIDz,cellIDx, cellIDy);
+    hCaloCellIDs->Fill(detector_layer_rz,cellIDx, cellIDy, energy);
     hCaloCellIDs_xy->Fill(cellIDx, cellIDy);
      
     if (detector_module_t != 0){
@@ -532,6 +562,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
       tempstructT.cellIDz       = detector_layer_rz;
       tempstructT.tower_trueID  = 0; //TODO how to get trueID?
       input_tower_rec.push_back(tempstructT);
+      input_tower_recSav.push_back(tempstructT);
     }
   }
 //   cout << "nCaloHits sim " << nCaloHitsSim << "\t rec " << nCaloHitsRec << endl;
@@ -539,6 +570,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
   
   hSamplingFractionEta->Fill(mceta, sumActiveCaloEnergy / (sumActiveCaloEnergy+sumPassiveCaloEnergy));  
   std::sort(input_tower_rec.begin(), input_tower_rec.end(), &acompare); 
+  std::sort(input_tower_recSav.begin(), input_tower_recSav.end(), &acompare); 
   std::sort(input_tower_sim.begin(), input_tower_sim.end(), &acompare); 
   
   // print towers rec hits
@@ -606,6 +638,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
         tempstructC.cluster_X = showershape_eta_phi[4];
         tempstructC.cluster_Y = showershape_eta_phi[5];
         tempstructC.cluster_Z = showershape_eta_phi[6];
+        tempstructC.cluster_towers = cluster_towers;
 //         std::cout <<  "---------> \t " << nclusters << "\tcluster with E = " << tempstructC.cluster_E << "\tEta: " << tempstructC.cluster_Eta<< "\tPhi: " << tempstructC.cluster_Phi
 //                                 << "\tX: " << tempstructC.cluster_X<< "\tY: " << tempstructC.cluster_Y<< "\tZ: " << tempstructC.cluster_Z<< "\tntowers: " << tempstructC.cluster_NTowers 
 //                                 << "\ttrueID: " << tempstructC.cluster_trueID << std::endl;      
@@ -627,7 +660,14 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     hRecNClusters_E_eta->Fill(mcenergy, clusters_calo.size(), mceta);  
     int iCl = 0;
     for (auto& cluster : clusters_calo) {
-      hRecClusterEcalib_E_eta->Fill(mcenergy, cluster.cluster_E/mcenergy, mceta);  
+      hRecClusterEcalib_E_eta->Fill(mcenergy, cluster.cluster_E/mcenergy, mceta);
+      for (int iCell = 0; iCell < (int)cluster.cluster_towers.size(); iCell++){
+        int pSav = 0;
+        while(cluster.cluster_towers.at(iCell).cellID !=  input_tower_recSav.at(pSav).cellID && pSav < (int)input_tower_recSav.size() ) pSav++;
+        if (cluster.cluster_towers.at(iCell).cellID == input_tower_recSav.at(pSav).cellID)
+          input_tower_recSav.at(pSav).tower_clusterIDA = iCl;
+      }
+      
       if (iCl == 0){
         hRecClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster.cluster_E/mcenergy, mceta);  
         hRecClusterNCells_Ehigh_eta->Fill(mcenergy, cluster.cluster_NTowers, mceta);  
@@ -640,18 +680,57 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
   } else {
     hRecNClusters_E_eta->Fill(mcenergy, 0., mceta);  
   }
-  
+    
   int iClF = 0;
-  
   for (auto& cluster : lfhcalClustersF()) {
-      hRecFClusterEcalib_E_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
-      if (iClF == 0){
-        hRecFClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
-        hRecFClusterNCells_Ehigh_eta->Fill(mcenergy, cluster->getNhits(), mceta);  
+    hRecFClusterEcalib_E_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);        
+    if (iClF == 0){
+      hRecFClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
+      hRecFClusterNCells_Ehigh_eta->Fill(mcenergy, cluster->getNhits(), mceta);  
+    }
+    
+    std::cout << iClF << "\t" << cluster->getNhits()  << std::endl;
+//     for (auto& protocluster : lfhcalProtoClustersF()) {
+//       if (! )
+    for (auto& hit: cluster->getHits()){
+//       for (int iCell = 0;  iCell < (int)cluster->getHits().size(); iCell++){
+        int pSav = 0;
+        while(hit.getCellID() !=  input_tower_recSav.at(pSav).cellID && pSav < (int)input_tower_recSav.size() ) pSav++;
+        if (hit.getCellID() == input_tower_recSav.at(pSav).cellID)
+          input_tower_recSav.at(pSav).tower_clusterIDB = iClF;
       }
-      iClF++;
+//     }
+    iClF++;
   }
   hRecFNClusters_E_eta->Fill(mcenergy, iClF, mceta);  
+  lFHCal_towers_N = (int)input_tower_recSav.size();
+  for (int iCell = 0; iCell < (int)input_tower_recSav.size(); iCell++){
+    std::cout << input_tower_recSav.at(iCell).cellIDx << "\t" << input_tower_recSav.at(iCell).cellIDy << "\t" << input_tower_recSav.at(iCell).cellIDz << "\t" << input_tower_recSav.at(iCell).energy << "\t" << input_tower_recSav.at(iCell).tower_clusterIDA << "\t" << input_tower_recSav.at(iCell).tower_clusterIDB << std::endl;
+    
+    lFHCal_towers_cellE[iCell]      = (float)input_tower_recSav.at(iCell).energy;
+    lFHCal_towers_cellT[iCell]      = (float)input_tower_recSav.at(iCell).time;
+    lFHCal_towers_cellIDx[iCell]    = (short)input_tower_recSav.at(iCell).cellIDx;
+    lFHCal_towers_cellIDy[iCell]    = (short)input_tower_recSav.at(iCell).cellIDy;
+    lFHCal_towers_cellIDz[iCell]    = (short)input_tower_recSav.at(iCell).cellIDz;
+    lFHCal_towers_clusterIDA[iCell] = (short)input_tower_recSav.at(iCell).tower_clusterIDA;
+    lFHCal_towers_clusterIDB[iCell] = (short)input_tower_recSav.at(iCell).tower_clusterIDB;
+    lFHCal_towers_cellTrueID[iCell] = (int)input_tower_recSav.at(iCell).tower_trueID;
+  }
+  
+  event_tree->Fill();
+  
+  lFHCal_towers_N = 0;
+  for (Int_t itow = 0; itow < maxNTowers; itow++){
+    lFHCal_towers_cellE[itow]       = 0;
+    lFHCal_towers_cellT[itow]       = 0;
+    lFHCal_towers_cellIDx[itow]     = 0;
+    lFHCal_towers_cellIDy[itow]     = 0;
+    lFHCal_towers_cellIDz[itow]     = 0;
+    lFHCal_towers_clusterIDA[itow]  = 0;
+    lFHCal_towers_clusterIDB[itow]  = 0;
+    lFHCal_towers_cellTrueID[itow]  = 0;
+  }
+  
 }
 
 //-------------------------------------------
@@ -660,4 +739,5 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
 void lfhcal_studiesProcessor::FinishWithGlobalRootLock() {
   std::cout << "------> " << nEventsWithCaloHits << " with calo info present"<< std::endl;
   // Do any final calculations here.
+    
 }

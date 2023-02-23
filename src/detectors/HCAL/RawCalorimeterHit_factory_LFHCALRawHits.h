@@ -41,8 +41,8 @@ public:
         m_tRes = 0.0; // in ns
         m_capTime = 100 ; // given in ns
         m_capADC=65536;//2^15
-        m_dyRangeADC=1 * dd4hep::GeV;//{this, "dynamicRangeADC", 100. * dd4hep::MeV};
-        m_pedMeanADC=20;//{this, "pedestalMean", 400};
+        m_dyRangeADC=1 * dd4hep::GeV;
+        m_pedMeanADC=20;
         m_pedSigmaADC = 0.8;
         m_resolutionTDC = 10 * dd4hep::picosecond;
         m_corrMeanScale = 1.0;

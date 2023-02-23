@@ -29,19 +29,18 @@ public:
         auto app = GetApplication();
         m_input_tag = "LFHCALRecHits";
 
-        m_splitCluster=true;              // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
-        m_minClusterHitEdep=1 * dd4hep::MeV;    // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
-        m_minClusterCenterEdep=190.0 * dd4hep::MeV; // from ATHENA's reconstruction.py
+        m_splitCluster=true;              
+        m_minClusterHitEdep=1 * dd4hep::MeV;    
+        m_minClusterCenterEdep=100.0 * dd4hep::MeV; 
 
         // neighbour checking distances
-        m_sectorDist=5.0 * dd4hep::cm;             // https://eicweb.phy.anl.gov/EIC/juggler/-/blob/main/JugReco/src/components/CalorimeterIslandCluster.cpp
-        u_localDistXY={15.0*dd4hep::mm, 15.0*dd4hep::mm};     //{this, "localDistXY", {}};
+        m_sectorDist=0 * dd4hep::cm;             
+        u_localDistXY={150.0*dd4hep::mm, 150.0*dd4hep::mm};     //{this, "localDistXY", {}};
         u_localDistXZ={};     //{this, "localDistXZ", {}};
         u_localDistYZ={};     //{this, "localDistYZ", {}};
         u_globalDistRPhi={};  //{this, "globalDistRPhi", {}};
         u_globalDistEtaPhi={};//{this, "globalDistEtaPhi", {}};
-        u_dimScaledLocalDistXY={15.0*dd4hep::mm, 15.0*dd4hep::mm};// from ATHENA's reconstruction.py
-
+        u_dimScaledLocalDistXY={150.0*dd4hep::mm, 150.0*dd4hep::mm};
 
         app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:splitCluster",             m_splitCluster);
         app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:minClusterHitEdep",  m_minClusterHitEdep);

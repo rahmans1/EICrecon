@@ -7,6 +7,7 @@
 #include <TH2D.h>
 #include <TH3D.h>
 #include <TFile.h>
+#include <TTree.h>
 
 // Include appropirate class headers. e.g.
 #include <edm4hep/SimCalorimeterHit.h>
@@ -28,6 +29,7 @@
 #include <edm4eic/CalorimeterHit.h>
 #include <edm4eic/ReconstructedParticle.h>
 #include <edm4eic/Cluster.h>
+#include <edm4eic/ProtoCluster.h>
 
 #include <services/log/Log_service.h>
 #include <extensions/spdlog/SpdlogMixin.h>
@@ -46,6 +48,7 @@ private:
     PrefetchT<edm4eic::CalorimeterHit> lfhcalRecHits = {this, "LFHCALRecHits"};
     PrefetchT<edm4hep::SimCalorimeterHit> lfhcalSimHits = {this, "LFHCALHits"};
     PrefetchT<edm4eic::Cluster> lfhcalClustersF = {this, "LFHCALClusters"};
+    PrefetchT<edm4eic::ProtoCluster> lfhcalProtoClustersF = {this, "LFHCALIslandProtoClusters"};
     
     // Declare histogram and tree pointers here. e.g.
     // TH2D* hEdigi = nullptr ;
@@ -87,10 +90,23 @@ public:
     TH2D* hPosCaloSimHitsZY;
     TH2D* hCaloCellIDs_xy;
     TH3D* hCaloCellIDs;
+    TH3D* hCaloCellIDsHCluster;
     TH2D* hCaloCellIDs_xy8M;
     TH2D* hCaloCellIDs_xy4M;
     TH2D* hPosCaloHitsXY4M;
 
+    TTree* event_tree;
+    const int maxNTowers = 65000;
+    int lFHCal_towers_N;
+    short* lFHCal_towers_cellIDx;
+    short* lFHCal_towers_cellIDy;
+    short* lFHCal_towers_cellIDz;
+    short* lFHCal_towers_clusterIDA;
+    short* lFHCal_towers_clusterIDB;
+    float* lFHCal_towers_cellE;
+    float* lFHCal_towers_cellT;
+    int* lFHCal_towers_cellTrueID;
+    
     int nEventsWithCaloHits = 0;
     std::shared_ptr<spdlog::logger> m_log;
     // Acts::GeometryContext geoContext;
