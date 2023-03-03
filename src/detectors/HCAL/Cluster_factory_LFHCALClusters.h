@@ -43,16 +43,15 @@ public:
         m_input_simhit_tag="LFHCALHits";
         m_input_protoclust_tag="LFHCALIslandProtoClusters";
     
-        m_sampFrac=0.025;// https://eicweb.phy.anl.gov/EIC/juggler/-/blob/bf366a35b480cda6c610b0dd6a4d4efcfd9a8e03/JugReco/src/components/ClusterRecoCoG.cpp
-        m_logWeightBase=6.2;// from ATHENA's reconstruction.py
-        m_depthCorrection=0.0;// https://eicweb.phy.anl.gov/EIC/juggler/-/blob/bf366a35b480cda6c610b0dd6a4d4efcfd9a8e03/JugReco/src/components/ClusterRecoCoG.cpp
-        m_energyWeight="log";// https://eicweb.phy.anl.gov/EIC/juggler/-/blob/bf366a35b480cda6c610b0dd6a4d4efcfd9a8e03/JugReco/src/components/ClusterRecoCoG.cpp
-        m_moduleDimZName="";// https://eicweb.phy.anl.gov/EIC/juggler/-/blob/bf366a35b480cda6c610b0dd6a4d4efcfd9a8e03/JugReco/src/components/ClusterRecoCoG.cpp
+        m_sampFrac=1.;
+        m_logWeightBase=4.5;
+        m_depthCorrection=0.0;
+        m_energyWeight="log";
+        m_moduleDimZName="";
         // Constrain the cluster position eta to be within
         // the eta of the contributing hits. This is useful to avoid edge effects
         // for endcaps.
-        m_enableEtaBounds=false;// https://eicweb.phy.anl.gov/EIC/juggler/-/blob/bf366a35b480cda6c610b0dd6a4d4efcfd9a8e03/JugReco/src/components/ClusterRecoCoG.cpp
-
+        m_enableEtaBounds=false;
 
         app->SetDefaultParameter("HCAL:LFHCALClusters:samplingFraction",             m_sampFrac);
         app->SetDefaultParameter("HCAL:LFHCALClusters:logWeightBase",  m_logWeightBase);

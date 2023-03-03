@@ -232,6 +232,7 @@ void CalorimeterHitDigi::signal_sum_digi( void ){
                     if (c.getTime() <= time) {
                         time = c.getTime();
                     }
+                }
                 if (timeC <= time) {
                     time = timeC;
                 }

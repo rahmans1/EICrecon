@@ -17,6 +17,7 @@
 #include <edm4hep/SimCalorimeterHit.h>
 #include <Evaluator/DD4hepUnits.h>
 #include <fmt/format.h>
+
 using namespace edm4eic;
 
 //
@@ -114,7 +115,6 @@ void CalorimeterIslandCluster::AlgorithmInit(std::shared_ptr<spdlog::logger>& lo
         m_log->error("readoutClass is not provided, it is needed to know the fields in readout ids");
       }
       m_idSpec = m_geoSvc->detector()->readout(m_readout).idSpec();
-
       is_neighbour = [this](const CaloHit* h1, const CaloHit* h2) {
         dd4hep::tools::Evaluator::Object evaluator;
         for(const auto &p : m_idSpec.fields()) {
@@ -124,8 +124,36 @@ void CalorimeterIslandCluster::AlgorithmInit(std::shared_ptr<spdlog::logger>& lo
           evaluator.setVariable((name + "_2").c_str(), field->value(h2->getCellID()));
           m_log->debug("setVariable(\"{}_1\", {});", name, field->value(h1->getCellID()));
           m_log->debug("setVariable(\"{}_2\", {});", name, field->value(h2->getCellID()));
+//           std::cout << name.data() << "_1\t"<<  field->value(h1->getCellID()) << std::endl;
+//           std::cout << name.data() << "_2\t"<<  field->value(h2->getCellID()) << std::endl;
         }
+//         if ( m_readout.compare("LFHCALHits") == 0){
+//           auto decoder = m_idSpec.decoder();
+//           std::cout << "\t==========================="<< std::endl; 
+//           uint64_t cellID1 = h1->getCellID();
+//           int cellIDx1 = 54*2 - decoder->get(cellID1, 1) * 2 + decoder->get(cellID1, 5);
+//           int cellIDy1 = 54*2 - decoder->get(cellID1, 2) * 2 + decoder->get(cellID1, 6);
+//           int cellIDz1 = decoder->get(cellID1, 7);
+//           std::cout << fmt::format("1::hit: energy = {:.5f} GeV, id x {:d}, idy {:d},  idz{:d}",  h1->getEnergy() , cellIDx1, cellIDy1, cellIDz1) << std::endl  ;
+//           uint64_t cellID2 = h2->getCellID();
+//           int cellIDx2 = 54*2 - decoder->get(cellID2, 1) * 2 + decoder->get(cellID2, 5);
+//           int cellIDy2 = 54*2 - decoder->get(cellID2, 2) * 2 + decoder->get(cellID2, 6);
+//           int cellIDz2 = decoder->get(cellID2, 7);
+//           std::cout << fmt::format("2::hit: energy = {:.5f} GeV, id x {:d}, idy {:d},  idz{:d}",  h2->getEnergy() , cellIDx2, cellIDy2, cellIDz2) << std::endl  ;
+//           
+//           int deltaX  = TMath::Abs(cellIDx2-cellIDx1) ;
+//           int deltaY  = TMath::Abs(cellIDy2-cellIDy1) ;
+//           int deltaZ  = TMath::Abs(cellIDz2-cellIDz1) ;
+//           bool neighbor = (deltaX+deltaY+deltaZ)==1;
+//           bool corner2D = (deltaX == 0 && deltaY == 1 && deltaZ == 1) || 
+//                           (deltaX == 1 && deltaY == 0 && deltaZ == 1) || 
+//                           (deltaX == 1 && deltaY == 1 && deltaZ == 0);          
+//           std::cout << deltaX << "\t" << deltaY << "\t" << deltaZ << "\t"<< "neighbor: " << neighbor << "\t corner: " << corner2D << std::endl;
+// 
+//         }
+//         std::cout << u_adjacencyMatrix.c_str() << std::endl;
         dd4hep::tools::Evaluator::Object::EvalStatus eval = evaluator.evaluate(u_adjacencyMatrix.c_str());
+//         std::cout << "result: " << eval.result() << std::endl;
         if (eval.status()) {
           std::stringstream sstr;
           eval.print_error(sstr);
@@ -189,7 +217,7 @@ void CalorimeterIslandCluster::AlgorithmProcess()  {
 
     // group neighboring hits
     std::vector<std::vector<std::pair<uint32_t, const CaloHit*>>> groups;
-
+     
     //FIXME: protocluster collection to this?
     std::vector<edm4eic::ProtoCluster> proto;
 
@@ -197,9 +225,8 @@ void CalorimeterIslandCluster::AlgorithmProcess()  {
     //TODO: use the right logger
     for (size_t i = 0; i < hits.size(); ++i) {
 
+      const auto& hit = hits[i];      
       if (m_log->level() <=spdlog::level::debug){//msgLevel(MSG::DEBUG)) {
-        const auto& hit = hits[i];
-        //LOG_INFO(default_cout_logger) << fmt::format("hit {:d}: energy = {:.4f} MeV, local = ({:.4f}, {:.4f}) mm, global=({:.4f}, {:.4f}, {:.4f}) mm", i, hit->getEnergy() * 1000., hit->getLocal().x, hit->getLocal().y, hit->getPosition().x,  hit->getPosition().y, hit->getPosition().z) << LOG_END;
         m_log->info("hit {:d}: energy = {:.4f} MeV, local = ({:.4f}, {:.4f}) mm, global=({:.4f}, {:.4f}, {:.4f}) mm", i, hit->getEnergy() * 1000., hit->getLocal().x, hit->getLocal().y, hit->getPosition().x,  hit->getPosition().y, hit->getPosition().z);
       }
       // already in a group
@@ -219,8 +246,8 @@ void CalorimeterIslandCluster::AlgorithmProcess()  {
       split_group(group, maxima, protoClusters);
       //TODO: use proper logger
 
+//       std::cout << "hits in a group: " << group.size() << ", " << "local maxima: " << maxima.size() << std::endl  ;
       if (m_log->level() <=spdlog::level::debug){//msgLevel(MSG::DEBUG)) {
-        //LOG_INFO(default_cout_logger) << "hits in a group: " << group.size() << ", " << "local maxima: " << maxima.size() << LOG_END;
         m_log->info("hits in a group: {}, local maxima: {}", group.size(), maxima.size());
       }
     }

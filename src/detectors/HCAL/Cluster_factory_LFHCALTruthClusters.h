@@ -42,7 +42,7 @@ public:
         m_input_protoclust_tag="LFHCALTruthProtoClusters";
 
         m_sampFrac=1.0;//{this, "samplingFraction", 1.0};
-        m_logWeightBase=3.6;//{this, "logWeightBase", 3.6};
+        m_logWeightBase=4.5;//{this, "logWeightBase", 3.6};
         m_depthCorrection=0.0;//{this, "depthCorrection", 0.0};
         m_energyWeight="log";//{this, "energyWeight", "log"};
         m_moduleDimZName="";//{this, "moduleDimZName", ""};

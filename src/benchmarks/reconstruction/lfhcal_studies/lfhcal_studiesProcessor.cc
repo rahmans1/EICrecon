@@ -673,7 +673,7 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
         hRecClusterNCells_Ehigh_eta->Fill(mcenergy, cluster.cluster_NTowers, mceta);  
       }
       iCl++;
-//       std::cout << cluster.cluster_E << "\t"<< cluster.cluster_NTowers <<std::endl;
+//       std::cout <<"MA cluster " << iCl << ":\t" << cluster.cluster_E << "\t"<< cluster.cluster_NTowers <<std::endl;
     }
     
     clusters_calo.clear();
@@ -681,15 +681,17 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     hRecNClusters_E_eta->Fill(mcenergy, 0., mceta);  
   }
     
-  int iClF = 0;
+  int iClF          = 0;
+  float highestEFr  = 0;
+  int iClFHigh      = 0;
   for (auto& cluster : lfhcalClustersF()) {
-    hRecFClusterEcalib_E_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);        
-    if (iClF == 0){
-      hRecFClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
-      hRecFClusterNCells_Ehigh_eta->Fill(mcenergy, cluster->getNhits(), mceta);  
+    if (cluster->getEnergy() > highestEFr){
+      iClFHigh    = iClF;
+      highestEFr  = cluster->getEnergy();
     }
+    hRecFClusterEcalib_E_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);        
     
-    std::cout << iClF << "\t" << cluster->getNhits()  << std::endl;
+//     std::cout << "Island cluster "<< iClF << ":\t" << cluster->getEnergy()  << "\t"<< cluster->getNhits()  << std::endl;
 //     for (auto& protocluster : lfhcalProtoClustersF()) {
 //       if (! )
     for (auto& hit: cluster->getHits()){
@@ -703,9 +705,19 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     iClF++;
   }
   hRecFNClusters_E_eta->Fill(mcenergy, iClF, mceta);  
+
+  iClF          = 0;
+  for (auto& cluster : lfhcalClustersF()) {
+    if (iClF == iClFHigh){
+      hRecFClusterEcalib_Ehigh_eta->Fill(mcenergy, cluster->getEnergy()/mcenergy, mceta);  
+      hRecFClusterNCells_Ehigh_eta->Fill(mcenergy, cluster->getNhits(), mceta);  
+    }
+    iClF++;
+  }
+  
   lFHCal_towers_N = (int)input_tower_recSav.size();
   for (int iCell = 0; iCell < (int)input_tower_recSav.size(); iCell++){
-    std::cout << input_tower_recSav.at(iCell).cellIDx << "\t" << input_tower_recSav.at(iCell).cellIDy << "\t" << input_tower_recSav.at(iCell).cellIDz << "\t" << input_tower_recSav.at(iCell).energy << "\t" << input_tower_recSav.at(iCell).tower_clusterIDA << "\t" << input_tower_recSav.at(iCell).tower_clusterIDB << std::endl;
+//     std::cout << input_tower_recSav.at(iCell).cellIDx << "\t" << input_tower_recSav.at(iCell).cellIDy << "\t" << input_tower_recSav.at(iCell).cellIDz << "\t" << input_tower_recSav.at(iCell).energy << "\t" << input_tower_recSav.at(iCell).tower_clusterIDA << "\t" << input_tower_recSav.at(iCell).tower_clusterIDB << std::endl;
     
     lFHCal_towers_cellE[iCell]      = (float)input_tower_recSav.at(iCell).energy;
     lFHCal_towers_cellT[iCell]      = (float)input_tower_recSav.at(iCell).time;
