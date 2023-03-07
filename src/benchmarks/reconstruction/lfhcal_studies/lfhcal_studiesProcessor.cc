@@ -112,9 +112,9 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   hRecFNClusters_E_eta->SetDirectory(m_dir_main);
 
   hClusterEcalib_E_phi = new TH3D("hClusterEcalib_E_phi", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #varphi (rad)", 
-                                  1500, 0., 150.0, 200, 0., 2.0, 360 , 0, 2*TMath::Pi());
+                                  1500, 0., 150.0, 200, 0., 2.0, 360 , -TMath::Pi(), TMath::Pi());
   hClusterEcalib_E_phi->SetDirectory(m_dir_main);
-  hClusterESimcalib_E_phi = new TH3D("hClusterESimcalib_E_phi", "; E_{MC} (GeV); E_{rec,sim hit}/E_{MC}; #varphi (rad)" , 1500, 0., 150.0, 200, 0., 2.0, 360 , 0, 2*TMath::Pi());
+  hClusterESimcalib_E_phi = new TH3D("hClusterESimcalib_E_phi", "; E_{MC} (GeV); E_{rec,sim hit}/E_{MC}; #varphi (rad)" , 1500, 0., 150.0, 200, 0., 2.0, 360 , -TMath::Pi(), TMath::Pi());
   hClusterESimcalib_E_phi->SetDirectory(m_dir_main);
 
 
