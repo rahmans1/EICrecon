@@ -70,7 +70,6 @@ public:
     TH3D* hRecNClusters_E_eta;
     TH3D* hRecFClusterNCells_Ehigh_eta;
     TH3D* hRecFNClusters_E_eta;
-    
     TH3D* hClusterEcalib_E_phi;
     TH3D* hClusterESimcalib_E_phi;
     TH2D* hCellESim_layerZ;
@@ -78,19 +77,18 @@ public:
     TH2D* hCellESim_layerY;
     TH2D* hCellTSim_layerZ;
     TH2D* hSamplingFractionEta;
-    TH2D* hPosCaloModulesXY;
+//     TH2D* hPosCaloModulesXY;
     TH2D* hPosCaloHitsXY;
     TH2D* hPosCaloHitsZX;
     TH2D* hPosCaloHitsZY;
     TH2D* hPosCaloSimHitsXY;
     TH2D* hPosCaloSimHitsZX;
     TH2D* hPosCaloSimHitsZY;
-    TH2D* hCaloCellIDs_xy;
-    TH3D* hCaloCellIDs;
-    TH3D* hCaloCellIDsHCluster;
-    TH2D* hCaloCellIDs_xy8M;
-    TH2D* hCaloCellIDs_xy4M;
-    TH2D* hPosCaloHitsXY4M;
+//     TH2D* hCaloCellIDs_xy;
+//     TH3D* hCaloCellIDs;
+//     TH2D* hCaloCellIDs_xy8M;
+//     TH2D* hCaloCellIDs_xy4M;
+//     TH2D* hPosCaloHitsXY4M;
 
     TTree* event_tree;
     const int maxNTowers = 65000;
@@ -109,12 +107,12 @@ public:
     std::shared_ptr<spdlog::logger> m_log;
     // Acts::GeometryContext geoContext;
 
-    /// Tracking propagation algorithm
-    eicrecon::TrackPropagation m_propagation_algo;
+//     /// Tracking propagation algorithm
+//     eicrecon::TrackPropagation m_propagation_algo;
 
-    std::shared_ptr<const ActsGeometryProvider> m_geo_provider;
-    std::shared_ptr<Acts::DiscSurface> m_mRICH_center_surface;
-    std::shared_ptr<Acts::DiscSurface> m_dRICH_center_surface;
+//     std::shared_ptr<const ActsGeometryProvider> m_geo_provider;
+//     std::shared_ptr<Acts::DiscSurface> m_mRICH_center_surface;
+//     std::shared_ptr<Acts::DiscSurface> m_dRICH_center_surface;
     dd4hep::BitFieldCoder* m_decoder;
     std::string nameSimHits         = "LFHCALHits";
     std::string nameRecHits         = "LFHCALRecHits";

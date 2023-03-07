@@ -60,8 +60,8 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
                            "LogLevel: trace, debug, info, warn, err, critical, off");
   m_log->set_level(eicrecon::ParseLogLevel(log_level_str));
 
-  m_geo_provider = acts_service->actsGeoProvider();
-  m_propagation_algo.init(acts_service->actsGeoProvider(), m_log);
+//   m_geo_provider = acts_service->actsGeoProvider();
+//   m_propagation_algo.init(acts_service->actsGeoProvider(), m_log);
 
   // Ask service locator a file to write histograms to
   auto root_file_service = app->GetService<RootFile_service>();
@@ -130,18 +130,15 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   hSamplingFractionEta = new TH2D("hSamplingFractionEta", "; #eta; f", 400, 1., 5., 500, 0., 0.2);
   hSamplingFractionEta->SetDirectory(m_dir_main);  
   
-  hPosCaloModulesXY = new TH2D("hPosCaloModulesXY", "; module ID X; module ID Y", 54, 0., 54., 54, 0., 54.);
-  hPosCaloModulesXY->SetDirectory(m_dir_main);
+//   hPosCaloModulesXY = new TH2D("hPosCaloModulesXY", "; module ID X; module ID Y", 54, 0., 54., 54, 0., 54.);
+//   hPosCaloModulesXY->SetDirectory(m_dir_main);
 
-  hCaloCellIDs = new TH3D("hCaloCellIDs", "; id Z; id x; id y", 7, -0.5, 6.5, 54*2, 0., 54.*2, 54*2, 0., 54.*2);
-  hCaloCellIDs->Sumw2();
-  hCaloCellIDs->SetDirectory(m_dir_main);
-  hCaloCellIDs_xy = new TH2D("hCaloCellIDs_xy", "; id x; id y", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
-  hCaloCellIDs_xy->SetDirectory(m_dir_main);
-  hCaloCellIDsHCluster = new TH3D("hCaloCellIDsHighestCluster", "; id Z; id x; id y", 7, -0.5, 6.5, 54*2, 0., 54.*2, 54*2, 0., 54.*2);
-  hCaloCellIDsHCluster->Sumw2();
-  hCaloCellIDsHCluster->SetDirectory(m_dir_main);
-  
+//   hCaloCellIDs = new TH3D("hCaloCellIDs", "; id Z; id x; id y", 7, -0.5, 6.5, 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+//   hCaloCellIDs->Sumw2();
+//   hCaloCellIDs->SetDirectory(m_dir_main);
+//   hCaloCellIDs_xy = new TH2D("hCaloCellIDs_xy", "; id x; id y", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+//   hCaloCellIDs_xy->SetDirectory(m_dir_main);
+//   
   hPosCaloHitsXY = new TH2D("hPosCaloHitsXY", "; X (cm); Y (cm)", 400, -400., 400., 400, -400., 400.);
   hPosCaloHitsZX = new TH2D("hPosCaloHitsZX", "; Z (cm); X (cm)", 200, 300., 500., 400, -400., 400.);
   hPosCaloHitsZY = new TH2D("hPosCaloHitsZY", "; Z (cm); Y (cm)", 200, 300., 500., 400, -400., 400.);
@@ -157,12 +154,12 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   hPosCaloSimHitsZY->SetDirectory(m_dir_main);
 
   
-  hCaloCellIDs_xy8M = new TH2D("hCaloCellIDs_xy8M", "; id x; id x", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
-  hCaloCellIDs_xy4M = new TH2D("hCaloCellIDs_xy4M", "; id x; id x", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
-  hPosCaloHitsXY4M = new TH2D("hPosCaloHitsXY4M", "; X (cm); Y (cm)", 400, -400., 400., 400, -400., 400.);
-  hCaloCellIDs_xy8M->SetDirectory(m_dir_main);    
-  hCaloCellIDs_xy4M->SetDirectory(m_dir_main);  
-  hPosCaloHitsXY4M->SetDirectory(m_dir_main);
+//   hCaloCellIDs_xy8M = new TH2D("hCaloCellIDs_xy8M", "; id x; id x", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+//   hCaloCellIDs_xy4M = new TH2D("hCaloCellIDs_xy4M", "; id x; id x", 54*2, 0., 54.*2, 54*2, 0., 54.*2);
+//   hPosCaloHitsXY4M = new TH2D("hPosCaloHitsXY4M", "; X (cm); Y (cm)", 400, -400., 400., 400, -400., 400.);
+//   hCaloCellIDs_xy8M->SetDirectory(m_dir_main);    
+//   hCaloCellIDs_xy4M->SetDirectory(m_dir_main);  
+//   hPosCaloHitsXY4M->SetDirectory(m_dir_main);
   
   lFHCal_towers_cellE = new float[maxNTowers];
   lFHCal_towers_cellT = new float[maxNTowers];
@@ -399,21 +396,21 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
 
     
     
-    hCaloCellIDs->Fill(cellIDz,cellIDx, cellIDy, energy);
-    hCaloCellIDs_xy->Fill(cellIDx, cellIDy);
+//     hCaloCellIDs->Fill(cellIDz,cellIDx, cellIDy, energy);
+//     hCaloCellIDs_xy->Fill(cellIDx, cellIDy);
      
-    if (detector_module_t != 0){
-      hCaloCellIDs_xy4M->Fill(cellIDx, cellIDy);
-      hPosCaloHitsXY4M->Fill(x, y);
-    } else {
-      hCaloCellIDs_xy8M->Fill(cellIDx, cellIDy);
-    }
+//     if (detector_module_t != 0){
+//       hCaloCellIDs_xy4M->Fill(cellIDx, cellIDy);
+//       hPosCaloHitsXY4M->Fill(x, y);
+//     } else {
+//       hCaloCellIDs_xy8M->Fill(cellIDx, cellIDy);
+//     }
          
     hPosCaloHitsXY->Fill(x, y);
     hPosCaloHitsZX->Fill(z, x);
     hPosCaloHitsZY->Fill(z, y);
 
-    hPosCaloModulesXY->Fill(detector_module_x, detector_module_y);
+//     hPosCaloModulesXY->Fill(detector_module_x, detector_module_y);
     nCaloHitsRec++;
     
     //loop over input_tower_rec and find if there is already a tower with the same cellID
@@ -504,7 +501,6 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
       removedCells++;
     }
 //     std::cout << "removed " << removedCells << " with E < "  << minAggE << "GeV" << std::endl;
-    
     
     int nclusters = 0;
     // vector of clusters
