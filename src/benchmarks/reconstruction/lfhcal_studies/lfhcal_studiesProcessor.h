@@ -93,6 +93,7 @@ public:
     TTree* event_tree;
     const int maxNTowers = 65000;
     int lFHCal_towers_N;
+    bool enableTree = false;
     short* lFHCal_towers_cellIDx;
     short* lFHCal_towers_cellIDy;
     short* lFHCal_towers_cellIDz;

@@ -161,29 +161,30 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
 //   hCaloCellIDs_xy4M->SetDirectory(m_dir_main);  
 //   hPosCaloHitsXY4M->SetDirectory(m_dir_main);
   
-  lFHCal_towers_cellE = new float[maxNTowers];
-  lFHCal_towers_cellT = new float[maxNTowers];
-  lFHCal_towers_cellIDx = new short[maxNTowers];
-  lFHCal_towers_cellIDy = new short[maxNTowers];
-  lFHCal_towers_cellIDz = new short[maxNTowers];
-  lFHCal_towers_clusterIDA = new short[maxNTowers];
-  lFHCal_towers_clusterIDB = new short[maxNTowers];
-  lFHCal_towers_cellTrueID = new int[maxNTowers];
-  
-  event_tree = new TTree("event_tree", "event_tree");
-  event_tree->SetDirectory(m_dir_main);
-  
-    // towers LFHCALO
-  event_tree->Branch("tower_LFHCAL_N", &lFHCal_towers_N, "tower_LFHCAL_N/I");
-  event_tree->Branch("tower_LFHCAL_E", lFHCal_towers_cellE, "tower_LFHCAL_E[tower_LFHCAL_N]/F");
-  event_tree->Branch("tower_LFHCAL_T", lFHCal_towers_cellT, "tower_LFHCAL_T[tower_LFHCAL_N]/F");
-  event_tree->Branch("tower_LFHCAL_ix", lFHCal_towers_cellIDx, "tower_LFHCAL_ix[tower_LFHCAL_N]/S");
-  event_tree->Branch("tower_LFHCAL_iy", lFHCal_towers_cellIDy, "tower_LFHCAL_iy[tower_LFHCAL_N]/S");
-  event_tree->Branch("tower_LFHCAL_iz", lFHCal_towers_cellIDz, "tower_LFHCAL_iz[tower_LFHCAL_N]/S");
-  event_tree->Branch("tower_LFHCAL_clusIDA", lFHCal_towers_clusterIDA, "tower_LFHCAL_clusIDA[tower_LFHCAL_N]/S");
-  event_tree->Branch("tower_LFHCAL_clusIDB", lFHCal_towers_clusterIDB, "tower_LFHCAL_clusIDB[tower_LFHCAL_N]/S");
-  event_tree->Branch("tower_LFHCAL_trueID", lFHCal_towers_cellTrueID, "tower_LFHCAL_trueID[tower_LFHCAL_N]/I");
-
+  if (enableTree){
+    lFHCal_towers_cellE = new float[maxNTowers];
+    lFHCal_towers_cellT = new float[maxNTowers];
+    lFHCal_towers_cellIDx = new short[maxNTowers];
+    lFHCal_towers_cellIDy = new short[maxNTowers];
+    lFHCal_towers_cellIDz = new short[maxNTowers];
+    lFHCal_towers_clusterIDA = new short[maxNTowers];
+    lFHCal_towers_clusterIDB = new short[maxNTowers];
+    lFHCal_towers_cellTrueID = new int[maxNTowers];
+    
+    event_tree = new TTree("event_tree", "event_tree");
+    event_tree->SetDirectory(m_dir_main);
+    
+      // towers LFHCALO
+    event_tree->Branch("tower_LFHCAL_N", &lFHCal_towers_N, "tower_LFHCAL_N/I");
+    event_tree->Branch("tower_LFHCAL_E", lFHCal_towers_cellE, "tower_LFHCAL_E[tower_LFHCAL_N]/F");
+    event_tree->Branch("tower_LFHCAL_T", lFHCal_towers_cellT, "tower_LFHCAL_T[tower_LFHCAL_N]/F");
+    event_tree->Branch("tower_LFHCAL_ix", lFHCal_towers_cellIDx, "tower_LFHCAL_ix[tower_LFHCAL_N]/S");
+    event_tree->Branch("tower_LFHCAL_iy", lFHCal_towers_cellIDy, "tower_LFHCAL_iy[tower_LFHCAL_N]/S");
+    event_tree->Branch("tower_LFHCAL_iz", lFHCal_towers_cellIDz, "tower_LFHCAL_iz[tower_LFHCAL_N]/S");
+    event_tree->Branch("tower_LFHCAL_clusIDA", lFHCal_towers_clusterIDA, "tower_LFHCAL_clusIDA[tower_LFHCAL_N]/S");
+    event_tree->Branch("tower_LFHCAL_clusIDB", lFHCal_towers_clusterIDB, "tower_LFHCAL_clusIDB[tower_LFHCAL_N]/S");
+    event_tree->Branch("tower_LFHCAL_trueID", lFHCal_towers_cellTrueID, "tower_LFHCAL_trueID[tower_LFHCAL_N]/I");
+  }
   
   std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << std::endl;
   dd4hep::Detector& detector = dd4hep::Detector::getInstance();
@@ -603,34 +604,35 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
     iClF++;
   }
   
-  lFHCal_towers_N = (int)input_tower_recSav.size();
-  for (int iCell = 0; iCell < (int)input_tower_recSav.size(); iCell++){
-//     std::cout << input_tower_recSav.at(iCell).cellIDx << "\t" << input_tower_recSav.at(iCell).cellIDy << "\t" << input_tower_recSav.at(iCell).cellIDz << "\t" << input_tower_recSav.at(iCell).energy << "\t" << input_tower_recSav.at(iCell).tower_clusterIDA << "\t" << input_tower_recSav.at(iCell).tower_clusterIDB << std::endl;
+  if (enableTree){
+    lFHCal_towers_N = (int)input_tower_recSav.size();
+    for (int iCell = 0; iCell < (int)input_tower_recSav.size(); iCell++){
+  //     std::cout << input_tower_recSav.at(iCell).cellIDx << "\t" << input_tower_recSav.at(iCell).cellIDy << "\t" << input_tower_recSav.at(iCell).cellIDz << "\t" << input_tower_recSav.at(iCell).energy << "\t" << input_tower_recSav.at(iCell).tower_clusterIDA << "\t" << input_tower_recSav.at(iCell).tower_clusterIDB << std::endl;
+      
+      lFHCal_towers_cellE[iCell]      = (float)input_tower_recSav.at(iCell).energy;
+      lFHCal_towers_cellT[iCell]      = (float)input_tower_recSav.at(iCell).time;
+      lFHCal_towers_cellIDx[iCell]    = (short)input_tower_recSav.at(iCell).cellIDx;
+      lFHCal_towers_cellIDy[iCell]    = (short)input_tower_recSav.at(iCell).cellIDy;
+      lFHCal_towers_cellIDz[iCell]    = (short)input_tower_recSav.at(iCell).cellIDz;
+      lFHCal_towers_clusterIDA[iCell] = (short)input_tower_recSav.at(iCell).tower_clusterIDA;
+      lFHCal_towers_clusterIDB[iCell] = (short)input_tower_recSav.at(iCell).tower_clusterIDB;
+      lFHCal_towers_cellTrueID[iCell] = (int)input_tower_recSav.at(iCell).tower_trueID;
+    }
     
-    lFHCal_towers_cellE[iCell]      = (float)input_tower_recSav.at(iCell).energy;
-    lFHCal_towers_cellT[iCell]      = (float)input_tower_recSav.at(iCell).time;
-    lFHCal_towers_cellIDx[iCell]    = (short)input_tower_recSav.at(iCell).cellIDx;
-    lFHCal_towers_cellIDy[iCell]    = (short)input_tower_recSav.at(iCell).cellIDy;
-    lFHCal_towers_cellIDz[iCell]    = (short)input_tower_recSav.at(iCell).cellIDz;
-    lFHCal_towers_clusterIDA[iCell] = (short)input_tower_recSav.at(iCell).tower_clusterIDA;
-    lFHCal_towers_clusterIDB[iCell] = (short)input_tower_recSav.at(iCell).tower_clusterIDB;
-    lFHCal_towers_cellTrueID[iCell] = (int)input_tower_recSav.at(iCell).tower_trueID;
+    event_tree->Fill();
+    
+    lFHCal_towers_N = 0;
+    for (Int_t itow = 0; itow < maxNTowers; itow++){
+      lFHCal_towers_cellE[itow]       = 0;
+      lFHCal_towers_cellT[itow]       = 0;
+      lFHCal_towers_cellIDx[itow]     = 0;
+      lFHCal_towers_cellIDy[itow]     = 0;
+      lFHCal_towers_cellIDz[itow]     = 0;
+      lFHCal_towers_clusterIDA[itow]  = 0;
+      lFHCal_towers_clusterIDB[itow]  = 0;
+      lFHCal_towers_cellTrueID[itow]  = 0;
+    }
   }
-  
-  event_tree->Fill();
-  
-  lFHCal_towers_N = 0;
-  for (Int_t itow = 0; itow < maxNTowers; itow++){
-    lFHCal_towers_cellE[itow]       = 0;
-    lFHCal_towers_cellT[itow]       = 0;
-    lFHCal_towers_cellIDx[itow]     = 0;
-    lFHCal_towers_cellIDy[itow]     = 0;
-    lFHCal_towers_cellIDz[itow]     = 0;
-    lFHCal_towers_clusterIDA[itow]  = 0;
-    lFHCal_towers_clusterIDB[itow]  = 0;
-    lFHCal_towers_cellTrueID[itow]  = 0;
-  }
-  
 }
 
 //-------------------------------------------
