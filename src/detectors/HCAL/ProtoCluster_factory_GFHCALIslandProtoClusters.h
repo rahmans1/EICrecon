@@ -2,8 +2,8 @@
 // Subject to the terms in the LICENSE file found in the top-level directory.
 //
 
-#ifndef _ProtoCluster_factory_LFHCALIslandProtoClusters_h_
-#define _ProtoCluster_factory_LFHCALIslandProtoClusters_h_
+#ifndef _ProtoCluster_factory_GFHCALIslandProtoClusters_h_
+#define _ProtoCluster_factory_GFHCALIslandProtoClusters_h_
 
 #include <random>
 
@@ -13,13 +13,13 @@
 #include <services/log/Log_service.h>
 #include <extensions/spdlog/SpdlogExtensions.h>
 
-class ProtoCluster_factory_LFHCALIslandProtoClusters : public JFactoryT<edm4eic::ProtoCluster>, CalorimeterIslandCluster {
+class ProtoCluster_factory_GFHCALIslandProtoClusters : public JFactoryT<edm4eic::ProtoCluster>, CalorimeterIslandCluster {
 
 public:
     //------------------------------------------
     // Constructor
-    ProtoCluster_factory_LFHCALIslandProtoClusters(){
-        SetTag("LFHCALIslandProtoClusters");
+    ProtoCluster_factory_GFHCALIslandProtoClusters(){
+        SetTag("GFHCALIslandProtoClusters");
         m_log = japp->GetService<Log_service>()->logger(GetTag());
     }
 
@@ -27,11 +27,11 @@ public:
     // Init
     void Init() override{
         auto app = GetApplication();
-        m_input_tag = "LFHCALRecHits";
+        m_input_tag = "GFHCALRecHits";
 
         m_splitCluster=false;              
-        m_minClusterHitEdep=1 * dd4hep::MeV;    
-        m_minClusterCenterEdep=100.0 * dd4hep::MeV; 
+        m_minClusterHitEdep=0.5 * dd4hep::MeV;    
+        m_minClusterCenterEdep=20.0 * dd4hep::MeV; 
 
         // neighbour checking distances
         m_sectorDist=0 * dd4hep::cm;             
@@ -44,21 +44,19 @@ public:
 
         // adjacency matrix
         m_geoSvcName = "geoServiceName";
-        // Magic constants:
-        //  24 - number of sectors
-        //  5  - number of towers per sector
-        //  moduleIDx 
-        //  moduleIDy 
-        //  towerx 
-        //  towery 
-        //  rlayerz
+        // readout variabes:
+        //  modulex 
+        //  moduley 
+        //  layerx 
+        //  layery 
+        //  layerz
         
-        std::string cellIdx_1  = "(54*2-moduleIDx_1*2+towerx_1)";
-        std::string cellIdx_2  = "(54*2-moduleIDx_2*2+towerx_2)";
-        std::string cellIdy_1  = "(54*2-moduleIDy_1*2+towery_1)";
-        std::string cellIdy_2  = "(54*2-moduleIDy_2*2+towery_2)";
-        std::string cellIdz_1  = "rlayerz_1";
-        std::string cellIdz_2  = "rlayerz_2";
+        std::string cellIdx_1  = "(54*2-modulex_1*4+layerx_1)";
+        std::string cellIdx_2  = "(54*2-modulex_2*4+layerx_2)";
+        std::string cellIdy_1  = "(54*2-moduley_1*2+layery_1)";
+        std::string cellIdy_2  = "(54*2-moduley_2*2+layery_2)";
+        std::string cellIdz_1  = "layerz_1";
+        std::string cellIdz_2  = "layerz_2";
         std::string deltaX     = Form("abs(%s-%s)", cellIdx_2.data(), cellIdx_1.data());
         std::string deltaY     = Form("abs(%s-%s)", cellIdy_2.data(), cellIdy_1.data());
         std::string deltaZ     = Form("abs(%s-%s)", cellIdz_2.data(), cellIdz_1.data());
@@ -71,22 +69,22 @@ public:
 //         u_adjacencyMatrix = Form("%s==1", neighbor.data());
 //         u_adjacencyMatrix = Form("%s==1", corner2D.data());
         std::remove(u_adjacencyMatrix.begin(), u_adjacencyMatrix.end(), ' ');
-        m_readout = "LFHCALHits";
+        m_readout = "GFHCALHits";
 
         
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:splitCluster",             m_splitCluster);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:minClusterHitEdep",  m_minClusterHitEdep);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:minClusterCenterEdep",     m_minClusterCenterEdep);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:sectorDist",   m_sectorDist);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:localDistXY",   u_localDistXY);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:localDistXZ",   u_localDistXZ);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:localDistYZ",  u_localDistYZ);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:globalDistRPhi",    u_globalDistRPhi);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:globalDistEtaPhi",    u_globalDistEtaPhi);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:dimScaledLocalDistXY",    u_dimScaledLocalDistXY);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:adjacencyMatrix", u_adjacencyMatrix);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:geoServiceName", m_geoSvcName);
-        app->SetDefaultParameter("HCAL:LFHCALIslandProtoClusters:readoutClass", m_readout);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:splitCluster",             m_splitCluster);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:minClusterHitEdep",  m_minClusterHitEdep);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:minClusterCenterEdep",     m_minClusterCenterEdep);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:sectorDist",   m_sectorDist);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:localDistXY",   u_localDistXY);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:localDistXZ",   u_localDistXZ);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:localDistYZ",  u_localDistYZ);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:globalDistRPhi",    u_globalDistRPhi);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:globalDistEtaPhi",    u_globalDistEtaPhi);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:dimScaledLocalDistXY",    u_dimScaledLocalDistXY);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:adjacencyMatrix", u_adjacencyMatrix);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:geoServiceName", m_geoSvcName);
+        app->SetDefaultParameter("HCAL:GFHCALIslandProtoClusters:readoutClass", m_readout);
 
         
         m_geoSvc = app->template GetService<JDD4hep_service>();
@@ -115,4 +113,4 @@ public:
     }
 };
 
-#endif // _ProtoCluster_factory_LFHCALIslandProtoClusters_h_
+#endif // _ProtoCluster_factory_GFHCALIslandProtoClusters_h_

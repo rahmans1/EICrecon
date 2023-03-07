@@ -42,16 +42,12 @@ class lfhcal_studiesProcessor: public JEventProcessorSequentialRoot {
 private:
 
     // Data objects we will need from JANA e.g.
-    // PrefetchT<edm4hep::SimCalorimeterHit> rawhits   = {this, "EcalBarrelHits"};
-    // PrefetchT<BEMCRawCalorimeterHit>      digihits  = {this};
     PrefetchT<edm4hep::MCParticle>  mcParticles   = {this, "MCParticles" };
-    PrefetchT<edm4eic::CalorimeterHit> lfhcalRecHits = {this, "LFHCALRecHits"};
-    PrefetchT<edm4hep::SimCalorimeterHit> lfhcalSimHits = {this, "LFHCALHits"};
-    PrefetchT<edm4eic::Cluster> lfhcalClustersF = {this, "LFHCALClusters"};
-    PrefetchT<edm4eic::ProtoCluster> lfhcalProtoClustersF = {this, "LFHCALIslandProtoClusters"};
-    
+//     PrefetchT<edm4eic::CalorimeterHit> lfhcalRecHits = {this, "LFHCALRecHits"};
+//     PrefetchT<edm4hep::SimCalorimeterHit> lfhcalSimHits = {this, "LFHCALHits"};
+//     PrefetchT<edm4eic::Cluster> lfhcalClustersF = {this, "LFHCALClusters"};
+//     PrefetchT<edm4eic::ProtoCluster> lfhcalProtoClustersF = {this, "LFHCALIslandProtoClusters"};    
     // Declare histogram and tree pointers here. e.g.
-    // TH2D* hEdigi = nullptr ;
 
 public:
     lfhcal_studiesProcessor() { SetTypeName(NAME_OF_THIS); }
@@ -60,6 +56,7 @@ public:
     void ProcessSequential(const std::shared_ptr<const JEvent>& event) override;
     void FinishWithGlobalRootLock() override;
     TDirectory *m_dir_main;
+    // Declare histogram and tree pointers here. e.g.
     TH2D* hMCEnergyVsEta;
     TH3D* hClusterEcalib_E_eta;
     TH3D* hClusterESimcalib_E_eta;
@@ -108,6 +105,7 @@ public:
     int* lFHCal_towers_cellTrueID;
     
     int nEventsWithCaloHits = 0;
+    bool isLFHCal = true;
     std::shared_ptr<spdlog::logger> m_log;
     // Acts::GeometryContext geoContext;
 
@@ -118,4 +116,13 @@ public:
     std::shared_ptr<Acts::DiscSurface> m_mRICH_center_surface;
     std::shared_ptr<Acts::DiscSurface> m_dRICH_center_surface;
     dd4hep::BitFieldCoder* m_decoder;
+    std::string nameSimHits         = "LFHCALHits";
+    std::string nameRecHits         = "LFHCALRecHits";
+    std::string nameClusters        = "LFHCALClusters";
+    std::string nameProtoClusters   = "LFHCALIslandProtoClusters";
+    short iPassive;
+    short iLx;
+    short iLy;
+    short iLz;
+    
 };

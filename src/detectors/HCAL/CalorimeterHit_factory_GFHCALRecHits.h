@@ -1,6 +1,6 @@
 
-#ifndef CalorimeterHit_factory_LFHCALRecHits_h_
-#define CalorimeterHit_factory_LFHCALRecHits_h_
+#ifndef CalorimeterHit_factory_GFHCALRecHits_h_
+#define CalorimeterHit_factory_GFHCALRecHits_h_
 
 #include <JANA/JFactoryT.h>
 
@@ -8,13 +8,13 @@
 #include <services/log/Log_service.h>
 #include <extensions/spdlog/SpdlogExtensions.h>
 
-class CalorimeterHit_factory_LFHCALRecHits : public JFactoryT<edm4eic::CalorimeterHit>, CalorimeterHitReco {
+class CalorimeterHit_factory_GFHCALRecHits : public JFactoryT<edm4eic::CalorimeterHit>, CalorimeterHitReco {
 
 public:
     //------------------------------------------
     // Constructor
-    CalorimeterHit_factory_LFHCALRecHits(){
-        SetTag("LFHCALRecHits");
+    CalorimeterHit_factory_GFHCALRecHits(){
+        SetTag("GFHCALRecHits");
         m_log = japp->GetService<Log_service>()->logger(GetTag());
     }
 
@@ -23,10 +23,10 @@ public:
     void Init() override{
         auto app = GetApplication();
 
-        m_input_tag = "LFHCALRawHits";
+        m_input_tag = "GFHCALRawHits";
 
         // digitization settings, must be consistent with digi class
-        m_capADC=65536;//2^16
+        m_capADC=131072;//2^17
         m_dyRangeADC=1 * dd4hep::GeV;//{this, "dynamicRangeADC", 100. * dd4hep::MeV};
         m_pedMeanADC=20;//{this, "pedestalMean", 400};
         m_pedSigmaADC=0.8;//{this, "pedestalSigma", 3.2};
@@ -38,16 +38,11 @@ public:
 
         // energy correction with sampling fraction
         m_sampFrac=0.033;//{this, "samplingFraction", 1.0};
-        m_sampFracLayer[0]=0.019;
-        m_sampFracLayer[1]=0.037;
-        m_sampFracLayer[2]=0.037;
-        m_sampFracLayer[3]=0.037;
-        m_sampFracLayer[4]=0.037;
-        m_sampFracLayer[5]=0.037;
-        m_sampFracLayer[6]=0.037;
+        m_sampFracLayer[0]=0.016;
+        for (int i = 1; i < 13; i++) m_sampFracLayer[i]=0.031;
         // geometry service to get ids, ignored if no names provided
         m_geoSvcName="geoServiceName";
-        m_readout="LFHCALHits";       
+        m_readout="GFHCALHits";       
         m_layerField="";              
         m_sectorField="";             
 
@@ -55,20 +50,20 @@ public:
         u_localDetFields={};          
 
 //        app->SetDefaultParameter("HCAL:tag",              m_input_tag);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:capacityADC",      m_capADC);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:dynamicRangeADC",  m_dyRangeADC);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:pedestalMean",     m_pedMeanADC);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:pedestalSigma",    m_pedSigmaADC);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:resolutionTDC",    m_resolutionTDC);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:thresholdFactor",  m_thresholdFactor);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:thresholdValue",   m_thresholdValue);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:samplingFraction", m_sampFrac);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:geoServiceName",   m_geoSvcName);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:readout",          m_readout);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:layerField",       m_layerField);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:sectorField",      m_sectorField);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:localDetElement",  m_localDetElement);
-        app->SetDefaultParameter("HCAL:LFHCALRecHits:localDetFields",   u_localDetFields);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:capacityADC",      m_capADC);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:dynamicRangeADC",  m_dyRangeADC);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:pedestalMean",     m_pedMeanADC);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:pedestalSigma",    m_pedSigmaADC);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:resolutionTDC",    m_resolutionTDC);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:thresholdFactor",  m_thresholdFactor);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:thresholdValue",   m_thresholdValue);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:samplingFraction", m_sampFrac);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:geoServiceName",   m_geoSvcName);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:readout",          m_readout);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:layerField",       m_layerField);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:sectorField",      m_sectorField);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:localDetElement",  m_localDetElement);
+        app->SetDefaultParameter("HCAL:GFHCALRecHits:localDetFields",   u_localDetFields);
         m_geoSvc = app->template GetService<JDD4hep_service>(); // TODO: implement named geometry service?
 
         AlgorithmInit(m_log);
@@ -96,4 +91,4 @@ public:
 
 };
 
-#endif // CalorimeterHit_factory_LFHCALRecHits_h_
+#endif // CalorimeterHit_factory_GFHCALRecHits_h_

@@ -51,7 +51,8 @@ public:
 
   // energy correction with sampling fraction
   double m_sampFrac          = 1.;//{this, "samplingFraction", 1.0};
-  double m_sampFracLayer[10] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0.}; //maximum 10 layers
+  double m_sampFracLayer[14] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                                0., 0., 0., 0.}; //maximum 14 layers
 
   // unitless counterparts of the input parameters
   double thresholdADC{0};

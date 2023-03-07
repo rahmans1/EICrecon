@@ -2,8 +2,8 @@
 // Subject to the terms in the LICENSE file found in the top-level directory.
 //
 
-#ifndef _TruthCluster_factory_LFHCALTruthProtoClusters_h_
-#define _TruthCluster_factory_LFHCALTruthProtoClusters_h_
+#ifndef _TruthCluster_factory_GFHCALTruthProtoClusters_h_
+#define _TruthCluster_factory_GFHCALTruthProtoClusters_h_
 
 #include <random>
 
@@ -13,13 +13,13 @@
 
 
 
-class ProtoCluster_factory_LFHCALTruthProtoClusters : public JFactoryT<edm4eic::ProtoCluster>, CalorimeterTruthClustering {
+class ProtoCluster_factory_GFHCALTruthProtoClusters : public JFactoryT<edm4eic::ProtoCluster>, CalorimeterTruthClustering {
 
 public:
     //------------------------------------------
     // Constructor
-    ProtoCluster_factory_LFHCALTruthProtoClusters(){
-        SetTag("LFHCALTruthProtoClusters");
+    ProtoCluster_factory_GFHCALTruthProtoClusters(){
+        SetTag("GFHCALTruthProtoClusters");
         m_log = japp->GetService<Log_service>()->logger(GetTag());
     }
 
@@ -27,8 +27,8 @@ public:
     // Init
     void Init() override{
         auto app = GetApplication();
-        m_inputHit_tag="LFHCALRecHits";
-        m_inputMCHit_tag="LFHCALHits";
+        m_inputHit_tag="GFHCALRecHits";
+        m_inputMCHit_tag="GFHCALHits";
 
         AlgorithmInit(m_log);
     }

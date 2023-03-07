@@ -153,10 +153,13 @@ void CalorimeterHitReco::AlgorithmProcess() {
         float energy = (((signed) rh->getAmplitude() - (signed) m_pedMeanADC)) / static_cast<float>(m_capADC) * m_dyRangeADC /
                 m_sampFrac;
         if (m_readout == "LFHCALHits" && m_sampFracLayer[0] != 0.){
-//           std::cout << "using layer dependent sampling, layer " << decoder->get(cellID, 7) << "\t" << m_sampFracLayer[decoder->get(cellID, 7)] << std::endl;
           energy = (((signed) rh->getAmplitude() - (signed) m_pedMeanADC)) / static_cast<float>(m_capADC) * m_dyRangeADC /
                     m_sampFracLayer[decoder->get(cellID, 7)];
+        } else if (m_readout == "GFHCALHits" && m_sampFracLayer[0] != 0.){
+          energy = (((signed) rh->getAmplitude() - (signed) m_pedMeanADC)) / static_cast<float>(m_capADC) * m_dyRangeADC /
+                    m_sampFracLayer[decoder->get(cellID, 6)];
         }
+
         const float time = rh->getTimeStamp() / stepTDC;
 //         std::cout << "cellID:" << cellID << "\t energy: " << energy << "\t TDC: " <<rh->getTimeStamp() << "\t time: " << time << std::endl;
 //        #pragma GCC diagnostic pop

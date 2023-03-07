@@ -41,12 +41,17 @@
 
 #include "RawCalorimeterHit_factory_LFHCALRawHits.h"
 #include "CalorimeterHit_factory_LFHCALRecHits.h"
-//#include "CalorimeterHit_factory_LFHCALMergedHits.h"
 #include "ProtoCluster_factory_LFHCALTruthProtoClusters.h"
 #include "ProtoCluster_factory_LFHCALIslandProtoClusters.h"
 #include "Cluster_factory_LFHCALClusters.h"
 #include "Cluster_factory_LFHCALTruthClusters.h"
-#include "Cluster_factory_LFHCALMergedClusters.h"
+
+#include "RawCalorimeterHit_factory_GFHCALRawHits.h"
+#include "CalorimeterHit_factory_GFHCALRecHits.h"
+#include "ProtoCluster_factory_GFHCALTruthProtoClusters.h"
+#include "ProtoCluster_factory_GFHCALIslandProtoClusters.h"
+#include "Cluster_factory_GFHCALClusters.h"
+#include "Cluster_factory_GFHCALTruthClusters.h"
 
 extern "C" {
     void InitPlugin(JApplication *app) {
@@ -90,12 +95,18 @@ extern "C" {
                 
         app->Add(new JFactoryGeneratorT<RawCalorimeterHit_factory_LFHCALRawHits>());
         app->Add(new JFactoryGeneratorT<CalorimeterHit_factory_LFHCALRecHits>());
-       // app->Add(new JFactoryGeneratorT<CalorimeterHit_factory_LFHCALMergedHits>());
         app->Add(new JFactoryGeneratorT<ProtoCluster_factory_LFHCALTruthProtoClusters>());
         app->Add(new JFactoryGeneratorT<ProtoCluster_factory_LFHCALIslandProtoClusters>());
         app->Add(new JFactoryGeneratorT<Cluster_factory_LFHCALClusters>());
         app->Add(new JFactoryGeneratorT<Cluster_factory_LFHCALTruthClusters>());
-        app->Add(new JFactoryGeneratorT<Cluster_factory_LFHCALMergedClusters>());
+      
+        app->Add(new JFactoryGeneratorT<RawCalorimeterHit_factory_GFHCALRawHits>());
+        app->Add(new JFactoryGeneratorT<CalorimeterHit_factory_GFHCALRecHits>());
+        app->Add(new JFactoryGeneratorT<ProtoCluster_factory_GFHCALTruthProtoClusters>());
+        app->Add(new JFactoryGeneratorT<ProtoCluster_factory_GFHCALIslandProtoClusters>());
+        app->Add(new JFactoryGeneratorT<Cluster_factory_GFHCALClusters>());
+        app->Add(new JFactoryGeneratorT<Cluster_factory_GFHCALTruthClusters>());
+      
         
     }
 }
