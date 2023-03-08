@@ -75,40 +75,40 @@ void lfhcal_studiesProcessor::InitWithGlobalRootLock() {
   // Create a directory for this plugin. And subdirectories for series of histograms
   m_dir_main = file->mkdir(plugin_name.c_str());
 
-  hMCEnergyVsEta = new TH2D("hMCEnergyVsEta", "; E (GeV); #eta", 1500, 0., 150., 400, 1., 5.);
+  hMCEnergyVsEta = new TH2D("hMCEnergyVsEta", "; E (GeV); #eta", 1500, 0., 150., 500, 0, 5);
   hMCEnergyVsEta->SetDirectory(m_dir_main);
 
   // Sum cell clusters rec
-  hClusterEcalib_E_eta = new TH3D("hClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hClusterEcalib_E_eta = new TH3D("hClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 50, 0, 5);
   hClusterEcalib_E_eta->SetDirectory(m_dir_main);
-  hClusterNCells_E_eta = new TH3D("hClusterNCells_E_eta", "; E_{MC} (GeV); N_{cells}; #eta",  1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hClusterNCells_E_eta = new TH3D("hClusterNCells_E_eta", "; E_{MC} (GeV); N_{cells}; #eta",  1500, 0., 150.0, 500, -0.5, 499.5, 50, 0, 5);
   hClusterNCells_E_eta->SetDirectory(m_dir_main);
   // Sum cell clusters sim
-  hClusterESimcalib_E_eta = new TH3D("hClusterESimcalib_E_eta", "; E_{MC} (GeV); E_{rec,sim hit}/E_{MC}; #eta" , 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hClusterESimcalib_E_eta = new TH3D("hClusterESimcalib_E_eta", "; E_{MC} (GeV); E_{rec,sim hit}/E_{MC}; #eta" , 1500, 0., 150.0, 200, 0., 2.0, 50, 0, 5);
   hClusterESimcalib_E_eta->SetDirectory(m_dir_main);
-  hClusterSimNCells_E_eta = new TH3D("hClusterSimNCells_E_eta", "; E_{MC} (GeV); N_{cells, sim}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hClusterSimNCells_E_eta = new TH3D("hClusterSimNCells_E_eta", "; E_{MC} (GeV); N_{cells, sim}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 50, 0, 5);
   hClusterSimNCells_E_eta->SetDirectory(m_dir_main);
   // rec cluster
-  hRecClusterEcalib_E_eta = new TH3D("hRecClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,rec clus}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hRecClusterEcalib_E_eta = new TH3D("hRecClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,rec clus}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 50, 0, 5);
   hRecClusterEcalib_E_eta->SetDirectory(m_dir_main);
   // rec cluster highest 
   hRecClusterEcalib_Ehigh_eta = new TH3D("hRecClusterEcalib_Ehigh_eta", "; E_{MC} (GeV); E_{rec,rec clus high.}/E_{MC}; #eta", 
-                                         1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+                                         1500, 0., 150.0, 200, 0., 2.0, 50, 0, 5);
   hRecClusterEcalib_Ehigh_eta->SetDirectory(m_dir_main);
-  hRecClusterNCells_Ehigh_eta = new TH3D("hRecClusterNCells_Ehigh_eta", "; E_{MC} (GeV); N_{cells, rec cl., high.}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hRecClusterNCells_Ehigh_eta = new TH3D("hRecClusterNCells_Ehigh_eta", "; E_{MC} (GeV); N_{cells, rec cl., high.}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 50, 0, 5);
   hRecClusterNCells_Ehigh_eta->SetDirectory(m_dir_main);
-  hRecNClusters_E_eta = new TH3D("hRecNClusters_E_eta", "; E_{MC} (GeV); N_{rec cl.}; #eta",  1500, 0., 150.0, 10, -0.5, 9.5, 20, 1, 5);
+  hRecNClusters_E_eta = new TH3D("hRecNClusters_E_eta", "; E_{MC} (GeV); N_{rec cl.}; #eta",  1500, 0., 150.0, 10, -0.5, 9.5, 50, 0, 5);
   hRecNClusters_E_eta->SetDirectory(m_dir_main);
   // rec cluster framework
-  hRecFClusterEcalib_E_eta = new TH3D("hRecFClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,fram clus}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+  hRecFClusterEcalib_E_eta = new TH3D("hRecFClusterEcalib_E_eta", "; E_{MC} (GeV); E_{rec,fram clus}/E_{MC}; #eta", 1500, 0., 150.0, 200, 0., 2.0, 50, 0, 5);
   hRecFClusterEcalib_E_eta->SetDirectory(m_dir_main);
   // rec cluster framework highest 
   hRecFClusterEcalib_Ehigh_eta = new TH3D("hRecFClusterEcalib_Ehigh_eta", "; E_{MC} (GeV); E_{rec,fram clus high.}/E_{MC}; #eta", 
-                                          1500, 0., 150.0, 200, 0., 2.0, 20, 1, 5);
+                                          1500, 0., 150.0, 200, 0., 2.0, 50, 0, 5);
   hRecFClusterEcalib_Ehigh_eta->SetDirectory(m_dir_main);
-  hRecFClusterNCells_Ehigh_eta = new TH3D("hRecFClusterNCells_Ehigh_eta", "; E_{MC} (GeV); N_{cells, rec f. cl., high.}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 20, 1, 5);
+  hRecFClusterNCells_Ehigh_eta = new TH3D("hRecFClusterNCells_Ehigh_eta", "; E_{MC} (GeV); N_{cells, rec f. cl., high.}; #eta", 1500, 0., 150.0, 500, -0.5, 499.5, 50, 0, 5);
   hRecFClusterNCells_Ehigh_eta->SetDirectory(m_dir_main);
-  hRecFNClusters_E_eta = new TH3D("hRecFNClusters_E_eta", "; E_{MC} (GeV); N_{rec f. cl.}; #eta",  1500, 0., 150.0, 10, -0.5, 9.5, 20, 1, 5);
+  hRecFNClusters_E_eta = new TH3D("hRecFNClusters_E_eta", "; E_{MC} (GeV); N_{rec f. cl.}; #eta",  1500, 0., 150.0, 10, -0.5, 9.5, 50, 0, 5);
   hRecFNClusters_E_eta->SetDirectory(m_dir_main);
 
   hClusterEcalib_E_phi = new TH3D("hClusterEcalib_E_phi", "; E_{MC} (GeV); E_{rec,rec hit}/E_{MC}; #varphi (rad)", 
