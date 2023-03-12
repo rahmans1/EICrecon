@@ -36,10 +36,14 @@ public:
         m_thresholdFactor=1.0;//{this, "thresholdFactor", 0.0};
         m_thresholdValue=3.0;//{this, "thresholdValue", 0.0};
 
-        // energy correction with sampling fraction
-        m_sampFrac=0.033;//{this, "samplingFraction", 1.0};
-        m_sampFracLayer[0]=0.016;
-        for (int i = 1; i < 13; i++) m_sampFracLayer[i]=0.031;
+//         // energy correction with sampling fraction default number of layers
+//         m_sampFrac=0.033;//{this, "samplingFraction", 1.0};
+//         m_sampFracLayer[0]=0.016;
+//         for (int i = 1; i < 13; i++) m_sampFracLayer[i]=0.031;
+        // energy correction with sampling fraction more layers
+        m_sampFrac=0.036;//{this, "samplingFraction", 1.0};
+        m_sampFracLayer[0]=0.022;
+        for (int i = 1; i < 13; i++) m_sampFracLayer[i]=0.041;
         // geometry service to get ids, ignored if no names provided
         m_geoSvcName="geoServiceName";
         m_readout="GFHCALHits";       

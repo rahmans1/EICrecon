@@ -461,8 +461,12 @@ void lfhcal_studiesProcessor::ProcessSequential(const std::shared_ptr<const JEve
   double samplingFractionW  = 0.019;
   int minCellIDzDiffSamp    = 5;
   if (!isLFHCal){
-    samplingFractionFe = 0.031;
-    samplingFractionW  = 0.016;
+//     // default number of layers
+//     samplingFractionFe = 0.031;
+//     samplingFractionW  = 0.016; 
+    // more layers
+    samplingFractionFe = 0.041;
+    samplingFractionW  = 0.022; 
     minCellIDzDiffSamp = 1; 
   }
   // print towers sim hits
